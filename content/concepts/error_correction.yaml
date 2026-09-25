@@ -1,0 +1,8 @@
+id: error_correction
+title: Error correction
+summary: >-
+  Spreading one logical qubit across many physical qubits so errors can be detected and fixed.
+status: stub
+prerequisites: [decoherence, cnot]
+estimated_minutes: 6
+course_topic: "Errors: mitigation vs. correction; surface code"

@@ -1,0 +1,8 @@
+id: complex_numbers
+title: Complex numbers
+summary: >-
+  Numbers with a real and an imaginary part; quantum amplitudes are complex numbers.
+status: stub
+prerequisites: []
+estimated_minutes: 4
+course_topic: "Linear algebra review"

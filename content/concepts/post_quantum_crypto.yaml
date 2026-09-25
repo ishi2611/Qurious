@@ -1,0 +1,8 @@
+id: post_quantum_crypto
+title: Post-quantum cryptography
+summary: >-
+  New encryption schemes designed to stay secure even against large quantum computers.
+status: stub
+prerequisites: [shor, grover]
+estimated_minutes: 5
+course_topic: "Post-quantum crypto and migration paths"

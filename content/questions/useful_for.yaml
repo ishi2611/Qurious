@@ -1,0 +1,14 @@
+id: useful_for
+question: What will quantum computers actually be useful for?
+status: draft
+enabled: false
+order: 8
+preview: >-
+  The strongest cases are simulating molecules and materials, and breaking (and so forcing us to
+  replace) some of today's cryptography. Claims that they'll speed up everyday computing or AI
+  across the board are much less certain.
+targets: [quantum_applications]
+reward:
+  type: coming_soon
+  title: Simulate a tiny molecule
+  description: Estimate the lowest energy of a two-qubit model with a variational circuit.

@@ -1,0 +1,93 @@
+id: measurement
+title: Measurement
+summary: >-
+  Measuring a qubit gives 0 or 1 with probabilities |α|² and |β|², and leaves the qubit in the
+  state that matches the result.
+status: draft
+prerequisites: [superposition]
+estimated_minutes: 4
+course_topic: "Measurement: basis states, Born rule, collapse"
+
+hook: >-
+  Measurement is where quantum and everyday intuition part ways: looking at a qubit changes it.
+  Your question depends on exactly what a measurement can and can't reveal.
+
+intuition:
+  analogy: >-
+    Asking a measurement is like asking a yes/no question of someone who hasn't made up their
+    mind. The question forces an answer, and if you immediately ask again, you get the same
+    answer.
+  where_it_breaks: >-
+    A hesitant person has reasons you can't see. For a qubit there is no evidence of hidden local
+    reasons deciding the outcome in advance. And you can ask a qubit different questions (measure
+    in different bases); asking one question can scramble the answer to another, which isn't how
+    people work.
+
+interactive:
+  type: measurement_lab
+  props: { initial_theta: 1.5708 }
+  caption: Measure once and watch the state jump to the result. Measure again and you get the same answer. Reset and repeat many times to see the odds emerge.
+
+math:
+  - level: 1
+    latex: 'P(0) = |\alpha|^2, \qquad P(1) = |\beta|^2'
+    plain_english: The Born rule. The chance of each result is the squared size of its amplitude.
+  - level: 2
+    latex: '\text{result } 0:\; |\psi\rangle \to |0\rangle, \qquad \text{result } 1:\; |\psi\rangle \to |1\rangle'
+    plain_english: >-
+      After the measurement, the qubit is in the state matching the result. Measuring again
+      gives the same result.
+  - level: 3
+    latex: 'P(v) = \left|\langle v|\psi\rangle\right|^2'
+    plain_english: >-
+      The general rule for measuring in any basis {|v⟩, |w⟩}: the probability is the squared
+      overlap between the state and the basis state.
+
+puzzle:
+  type: numeric
+  prompt: A qubit is in 0.6|0⟩ + 0.8|1⟩. You measure it, get 1, and immediately measure again. What's the probability of 1 the second time?
+  answer: 1
+  tolerance: 0
+  hints:
+    - What state is the qubit in right after the first measurement?
+
+checks:
+  - question: You measure a qubit in |+⟩ and get 0. What is its state now?
+    options: ["Still |+⟩", "|0⟩", "|1⟩"]
+    answer: 1
+    explanation: The measurement leaves the qubit in the state matching the result, |0⟩. The superposition is gone.
+    misconception_addressed: Measurement just reveals the state without changing it.
+  - question: Can you find α and β by measuring one qubit once?
+    options:
+      - "Yes, the result tells you both"
+      - "No. You get one bit; estimating α and β takes many identically prepared copies"
+      - "Yes, if you measure gently enough"
+    answer: 1
+    explanation: >-
+      One measurement gives one bit and changes the state. To estimate the amplitudes you need
+      many fresh copies, and even then you learn their sizes, not the full state, unless you also
+      measure in other bases.
+    misconception_addressed: A careful enough measurement reveals the full state of one qubit.
+
+diagnostic:
+  - question: A measurement of a qubit gives 1. If you measure it again right away (nothing else happens in between), what do you get?
+    options: ["1 again", "0 or 1, 50/50", "0"]
+    answer: 0
+    explanation: After giving 1, the qubit is in |1⟩, so an immediate re-measurement gives 1 again.
+
+alt_explanation: >-
+  Think of measurement as a sorting machine with two bins, 0 and 1. A qubit going in lands in one
+  bin, with the odds set by its amplitudes squared, and it comes out as a clean |0⟩ or |1⟩ that
+  matches its bin. Send it through the same machine again and it lands in the same bin. The
+  sorting itself is what changes the state.
+
+common_misconceptions:
+  - Measurement just reads out a value that was already there.
+  - Measuring more gently lets you see the amplitudes.
+
+reviewer_notes:
+  - >-
+    I describe measurement with the "collapse" (projection) rule, as the course does, and
+    mention in the interpretations stub that this is one reading. Please check that the "no
+    evidence of hidden local reasons" wording is acceptable at this point in the path, since
+    Bell tests are only introduced later.

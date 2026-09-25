@@ -1,0 +1,16 @@
+id: quantum_teleportation
+question: Is quantum teleportation real teleportation?
+status: draft
+enabled: true
+order: 7
+preview: >-
+  It's real, but it isn't Star Trek. Quantum teleportation moves the exact state of a qubit
+  from one place to another, and it has been done over long distances. What it doesn't move is
+  matter, and the path ahead shows why it can't be instant.
+targets: [teleportation]
+reward:
+  type: teleport_lab
+  title: Teleport a qubit
+  description: >-
+    Prepare any qubit state you like, run the protocol step by step, and check that Bob ends up
+    with exactly your state while Alice's copy is gone.

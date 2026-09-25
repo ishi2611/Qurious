@@ -1,0 +1,8 @@
+id: qft_period_finding
+title: QFT and period finding
+summary: >-
+  The quantum Fourier transform turns a hidden repeating pattern into something a measurement can read.
+status: stub
+prerequisites: [interference, multiple_qubits]
+estimated_minutes: 6
+course_topic: "QFT, phase kickback, phase estimation"

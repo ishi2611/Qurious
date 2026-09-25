@@ -1,0 +1,92 @@
+id: bloch_sphere
+title: The Bloch sphere
+summary: >-
+  Every single-qubit state is a point on a sphere: the latitude sets the measurement odds, the
+  longitude sets the phase, and gates are rotations.
+status: draft
+prerequisites: [measurement, complex_numbers]
+estimated_minutes: 5
+course_topic: "Qubit: geometric representation (Bloch sphere)"
+
+hook: >-
+  Pictures beat formulas. The Bloch sphere turns every possible single-qubit state into a point
+  on a globe, so gates become rotations you can watch.
+
+intuition:
+  analogy: >-
+    Think of latitude and longitude on a globe. The north pole is |0⟩ and the south pole is |1⟩.
+    How far south the arrow points sets the odds of reading 1; how far around the equator it
+    points (the longitude) is the phase.
+  where_it_breaks: >-
+    On a globe, opposite points are just far apart. On the Bloch sphere, opposite points are
+    orthogonal states that one measurement can tell apart perfectly, like |0⟩ and |1⟩ or |+⟩
+    and |−⟩. The arrow doesn't point anywhere in physical space. And the picture only works for
+    one qubit on its own: a qubit that's entangled with another sits inside the sphere, not on
+    its surface.
+
+interactive:
+  type: bloch_sphere
+  props: { mode: full, gates: [X, Y, Z, H, S, T], show_probabilities: true, allow_measure: true }
+  caption: Apply gates and watch the arrow rotate. Z, S and T spin it around the vertical axis. Notice they never change the 0/1 odds.
+
+math:
+  - level: 1
+    latex: '|\psi\rangle = \cos\tfrac{\theta}{2}\,|0\rangle + e^{i\varphi}\sin\tfrac{\theta}{2}\,|1\rangle'
+    plain_english: >-
+      θ is the angle down from the north pole and φ is the angle around the equator. Any qubit
+      state can be written this way (ignoring an overall phase that no measurement can detect).
+  - level: 2
+    latex: 'P(0) = \cos^2\tfrac{\theta}{2}, \qquad P(1) = \sin^2\tfrac{\theta}{2}'
+    plain_english: Only the latitude affects the 0/1 odds. On the equator (θ = 90°) they're 50/50.
+  - level: 3
+    latex: '(x, y, z) = (\sin\theta\cos\varphi,\; \sin\theta\sin\varphi,\; \cos\theta)'
+    plain_english: The arrow's coordinates in 3D. The z-coordinate equals P(0) − P(1).
+
+puzzle:
+  type: circuit_goal
+  prompt: Point the arrow along the +y axis. That's the state |+i⟩ = (|0⟩ + i|1⟩)/√2.
+  num_qubits: 1
+  allowed_gates: [H, S, X, Z]
+  target_probabilities: { "0": 0.5, "1": 0.5 }
+  target_amplitudes: { "0": [0.70710678, 0], "1": [0, 0.70710678] }
+  hints:
+    - First get onto the equator.
+    - S rotates the arrow a quarter turn around the vertical axis.
+
+checks:
+  - question: "|0⟩ and |1⟩ sit at opposite poles of the Bloch sphere. What does \"opposite\" mean here?"
+    options:
+      - "They're orthogonal: a 0/1 measurement tells them apart perfectly"
+      - "They point in opposite directions in physical space"
+      - "They have opposite (negative) probabilities"
+    answer: 0
+    explanation: >-
+      On the Bloch sphere, opposite means perfectly distinguishable (orthogonal). The sphere is a
+      map of states, not of space.
+    misconception_addressed: The Bloch arrow points in a physical direction.
+  - question: Which change leaves the 0/1 measurement odds exactly the same?
+    options:
+      - "Moving the arrow north or south"
+      - "Rotating the arrow around the vertical (z) axis"
+      - "Flipping it with the X gate"
+    answer: 1
+    explanation: >-
+      The odds depend only on the latitude θ. Spinning around the z-axis changes only the phase
+      φ, which a 0/1 measurement can't see.
+    misconception_addressed: Every gate changes the measurement probabilities.
+
+diagnostic:
+  - question: Where on the Bloch sphere is a state that gives 0 and 1 with equal probability?
+    options: ["At the north pole", "Anywhere on the equator", "At the center"]
+    answer: 1
+    explanation: Every point on the equator is 50/50; they differ only in phase.
+
+alt_explanation: >-
+  Think of the arrow as a clock hand in 3D. Tilting it from straight up (|0⟩) toward straight
+  down (|1⟩) changes the odds of reading 1. Swinging it around the vertical axis changes
+  something the 0/1 reading can't see (the phase), but other gates and measurements can. Every
+  single-qubit gate is some rotation of this hand.
+
+common_misconceptions:
+  - The Bloch sphere shows where the qubit is in space.
+  - Opposite points on the sphere are "negatives" of each other.

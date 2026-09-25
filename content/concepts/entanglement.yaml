@@ -1,0 +1,116 @@
+id: entanglement
+title: Entanglement
+summary: >-
+  Two qubits are entangled when their joint state can't be split into a state for each one;
+  their measurement results are then correlated in ways no pre-set values can explain.
+status: draft
+prerequisites: [cnot]
+estimated_minutes: 5
+course_topic: "Multiple qubits: entanglement"
+
+hook: >-
+  Entanglement is behind teleportation, quantum cryptography and most "spooky" headlines.
+  Here's what it actually is, with no mysticism and no hand-waving.
+question_hooks:
+  entanglement_ftl: >-
+    This is the heart of your question. Entangled qubits give matching results even when they're
+    measured far apart, and that matching is exactly what people point to when they say
+    something travels faster than light.
+  quantum_teleportation: >-
+    Teleportation runs on entanglement: a shared entangled pair is the "channel" that carries
+    most of the state. So first, what is an entangled pair?
+
+intuition:
+  analogy: >-
+    Take a pair of gloves and put one in each of two boxes. Open one box, see a left glove, and
+    you instantly know the other box holds a right glove, however far away it is.
+  where_it_breaks: >-
+    This is the most famous analogy, and it fails in an important way. Each glove box held a
+    definite glove all along. Bell's theorem, and experiments since the 1980s (loophole-free
+    since 2015), show that no such pre-set local answers can reproduce the correlations
+    entangled qubits show when measured in different bases. What the glove picture does get
+    right: nobody chooses which result they get, so nothing is being sent. You'll see why that
+    matters shortly.
+
+interactive:
+  type: circuit_sandbox
+  props:
+    num_qubits: 2
+    allowed_gates: [H, X, CNOT]
+    initial_ops: [{ gate: H, qubits: [0] }, { gate: CNOT, qubits: [0, 1] }]
+    show_bloch: true
+  caption: This circuit makes an entangled pair. Notice the outcomes are only 00 and 11, and each qubit's own Bloch arrow shrinks to nothing, because neither qubit has a state of its own.
+
+math:
+  - level: 1
+    latex: '\tfrac{1}{\sqrt{2}}\left(|00\rangle + |11\rangle\right)'
+    plain_english: Both qubits read 0, or both read 1, each with 50% chance. Never 01 or 10.
+  - level: 2
+    latex: '|\psi\rangle \neq |a\rangle \otimes |b\rangle \text{ for any single-qubit states } |a\rangle, |b\rangle'
+    plain_english: >-
+      That's the definition of entangled: the pair's state can't be written as a product of two
+      separate single-qubit states.
+  - level: 3
+    latex: '\mathrm{CNOT}\,(H \otimes I)\,|00\rangle = \tfrac{1}{\sqrt{2}}\left(|00\rangle + |11\rangle\right)'
+    plain_english: >-
+      H puts q0 into (|0⟩+|1⟩)/√2, and CNOT copies its 0/1 value onto q1 in each branch,
+      linking the two.
+
+puzzle:
+  type: circuit_goal
+  prompt: Build a pair that always gives matching results, 00 or 11, each half the time.
+  num_qubits: 2
+  allowed_gates: [H, X, CNOT]
+  target_probabilities: { "00": 0.5, "11": 0.5 }
+  hints:
+    - Start by putting q0 into a 50/50 superposition.
+    - Then let q0 control a flip of q1.
+
+checks:
+  - question: Which of these states is entangled?
+    options:
+      - "(1/√2)(|00⟩ + |01⟩)"
+      - "(1/√2)(|00⟩ + |11⟩)"
+      - "|01⟩"
+    answer: 1
+    explanation: >-
+      The first one factors as |0⟩ ⊗ (|0⟩ + |1⟩)/√2, and the third is |0⟩ ⊗ |1⟩. Only
+      (|00⟩ + |11⟩)/√2 can't be split into two separate qubit states.
+    misconception_addressed: Any two-qubit superposition is entangled.
+  - question: The pair is in (1/√2)(|00⟩ + |11⟩). Looking at q1 alone, before anything is measured, what is its state?
+    options:
+      - "|0⟩"
+      - "|+⟩"
+      - "It has no state of its own; alone, it behaves like a fair coin in every basis"
+    answer: 2
+    explanation: >-
+      Entangled qubits don't have individual pure states. Measured on its own, in any basis, q1
+      gives 50/50. The information is in the correlations, which is why its Bloch arrow shrank to
+      zero.
+    misconception_addressed: Each qubit of an entangled pair is secretly in some definite state.
+
+diagnostic:
+  - question: What does it mean for two qubits to be entangled?
+    options:
+      - "They were created at the same time"
+      - "Their joint state can't be split into separate states for each qubit, so their results are correlated"
+      - "Measuring one sends a signal to the other"
+    answer: 1
+    explanation: Entanglement is about the joint state not factoring; whether it lets you send signals is a separate question (it doesn't).
+
+alt_explanation: >-
+  Look at the list of outcomes. For (|00⟩ + |11⟩)/√2, only "both 0" and "both 1" appear. If you
+  tried to assign each qubit its own state, you'd need q0 to be 50/50 and q1 to be 50/50, but
+  then all four outcomes, including 01 and 10, would show up. The only way to get perfect
+  matching without 01 or 10 is a state that belongs to the pair as a whole. That's entanglement.
+
+common_misconceptions:
+  - Entangled particles are like gloves with pre-set values.
+  - Measuring one entangled qubit sends a signal to the other.
+  - Any superposition of two qubits is entangled.
+
+reviewer_notes:
+  - >-
+    Historical claim: Bell-test violations were demonstrated in the early 1980s (Aspect et al.)
+    and loophole-free in 2015 (Hensen et al.; Giustina et al.; Shalm et al.). Please confirm the
+    level of detail is right for learners.

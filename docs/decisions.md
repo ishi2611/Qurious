@@ -33,3 +33,18 @@ The TypeScript simulator (`web/src/lib/quantum/`) orders qubits big-endian (q0 i
 
 ### 2026-09-24 · Cross-checking against Qiskit-Aer compares full amplitudes
 `scripts/sim-crosscheck.sh` runs random circuits (every gate, 1–5 qubits) through both simulators and compares amplitudes, which also checks phases, not only probabilities. The Aer run uses `transpile(..., optimization_level=0)`: at higher levels Qiskit may remove SWAP gates and record them as a qubit relabeling, which permutes the saved statevector. That made 22 of the first 50 circuits look wrong even though the simulator was correct. `api/tests/test_crosscheck.py` guards against this regression.
+
+### 2026-09-24 · Content schema: stubs vs. authored lessons, separate diagnostic questions
+Concepts have `status: stub | draft | reviewed`. A stub is only a node in the map, so the path engine and the v2 question router can use all 31 concepts before every lesson is written. Authored lessons must have every section. The validator refuses to enable a question whose path passes through a stub, so learners can't reach a dead end. Diagnostic questions (the quick check before a path) are separate from the lesson's own checks, so a learner never sees the same question twice. `question_hooks` lets a lesson carry a hand-written hook per entry question, which works without any LLM and is the fallback when personalization is unavailable. `reviewer_notes` holds the author's uncertainties for the content owner, since YAML comments aren't machine-visible.
+
+### 2026-09-24 · Puzzles are proven solvable, and can require specific gates
+The validator runs a breadth-first search over each circuit puzzle's allowed gates (states deduplicated up to global phase) and fails if no solution exists. This caught a real bug: the CNOT puzzle could be solved with two X gates and no CNOT. `required_gates` now makes a puzzle count only if it uses the gate it's teaching. The small NumPy simulator used for this is tested against Qiskit.
+
+### 2026-09-24 · Path engine prunes prerequisites that only known concepts need
+`learning_path` walks down from the targets but stops at concepts the learner already knows, so knowing "entanglement" skips everything that only entanglement needed, while prerequisites still needed elsewhere stay. Ties in the topological order are broken by depth in the full map, then by id, so identical inputs always give identical paths (important for a study).
+
+### 2026-09-24 · The API refuses to start with invalid content
+`GET /concepts`, `GET /questions` and `POST /path` load and validate the content once per process. If validation fails, the endpoints raise instead of serving a broken map.
+
+### 2026-09-24 · Math is validated with KaTeX itself
+Math rendering is checked by rendering every block with KaTeX in strict mode (`npm run content:math`), the same library the lesson player uses, rather than approximating it in Python. `scripts/validate-content.sh` runs both halves of the validator.

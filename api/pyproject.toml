@@ -9,6 +9,8 @@ dependencies = [
     "pydantic-settings>=2.4",
     "qiskit>=2.0",        # validates our TypeScript simulator; optional real-hardware runs
     "qiskit-aer>=0.17",
+    "networkx>=3.3",      # concept map and path engine
+    "pyyaml>=6.0",        # content files
 ]
 
 [project.optional-dependencies]

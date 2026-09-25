@@ -1,0 +1,8 @@
+id: grover
+title: Grover's search
+summary: >-
+  Searching an unsorted list in about √N steps instead of N, by repeatedly amplifying the right answer.
+status: stub
+prerequisites: [deutsch_jozsa]
+estimated_minutes: 6
+course_topic: "Grover's algorithm and amplitude amplification"

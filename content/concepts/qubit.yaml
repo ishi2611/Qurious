@@ -1,0 +1,90 @@
+id: qubit
+title: The qubit
+summary: >-
+  A qubit's state is a pair of amplitudes for |0⟩ and |1⟩. Reading it gives a single 0 or 1,
+  with odds set by those amplitudes.
+status: draft
+prerequisites: [classical_bits, vectors_and_kets]
+estimated_minutes: 4
+course_topic: "Qubits: the building block of a quantum system"
+
+hook: >-
+  Everything in quantum computing rests on one object. Before we can say what entanglement or
+  teleportation does, we need to be exact about what a single qubit is, and what it isn't.
+
+intuition:
+  analogy: >-
+    Picture a dial that can be set anywhere between "fully 0" and "fully 1." When you read the
+    dial, though, it can't show a setting: it snaps to 0 or 1, and the setting only decides the
+    odds of each.
+  where_it_breaks: >-
+    A dial has a definite setting you could, in principle, peek at. From a single qubit you can't
+    read out its amplitudes at all; one reading gives one bit, and that's all you get. Amplitudes
+    can also be negative (or complex), which lets them cancel each other. No dial setting can do
+    that.
+
+interactive:
+  type: bloch_sphere
+  props: { mode: polar, gates: [], show_probabilities: true, allow_measure: true }
+  caption: Drag the arrow between |0⟩ at the top and |1⟩ at the bottom, then measure. You get one bit per measurement, never the setting itself.
+
+math:
+  - level: 1
+    latex: '|\psi\rangle = \alpha\,|0\rangle + \beta\,|1\rangle, \qquad |\alpha|^2 + |\beta|^2 = 1'
+    plain_english: A qubit's state is any normalized combination of |0⟩ and |1⟩.
+  - level: 2
+    latex: '|\psi\rangle \in \mathbb{C}^2, \qquad \lVert \psi \rVert = 1'
+    plain_english: >-
+      Formally, the state is a length-1 vector in a two-dimensional space whose entries are
+      complex numbers.
+
+puzzle:
+  type: numeric
+  prompt: You measure a single qubit once. How many classical bits of information do you get out?
+  answer: 1
+  tolerance: 0
+  hints:
+    - What does the result of one measurement look like?
+
+checks:
+  - question: Which statement about a qubit before it's measured is right?
+    options:
+      - "It's secretly 0 or 1, and we just don't know which"
+      - "Its state is described by amplitudes for |0⟩ and |1⟩"
+      - "It stores infinitely many bits that you can read out"
+    answer: 1
+    explanation: >-
+      The state is the pair of amplitudes. It isn't a hidden 0 or 1: the state (|0⟩ + |1⟩)/√2
+      can be turned into |0⟩ with certainty by a gate (you'll meet H soon), which a coin that's
+      secretly heads or tails could never do. And although the amplitudes are continuous, one
+      measurement yields just one bit.
+    misconception_addressed: A qubit is a hidden classical bit, or a store of unlimited readable information.
+  - question: You measure a qubit and get 1. What was its state before the measurement?
+    options:
+      - "Definitely |1⟩"
+      - "Any state with a nonzero amplitude for |1⟩"
+      - "Definitely a 50/50 mix"
+    answer: 1
+    explanation: >-
+      Any state with β ≠ 0 can give 1. A single result can't pin down the state that produced
+      it.
+    misconception_addressed: A measurement result reveals the state it came from.
+
+diagnostic:
+  - question: How is a qubit different from a bit?
+    options:
+      - "A qubit can also take values like 2 or 3"
+      - "Its state combines |0⟩ and |1⟩ with amplitudes, but reading it still gives 0 or 1"
+      - "A qubit is simply a faster bit"
+    answer: 1
+    explanation: A qubit reads out as 0 or 1 like a bit, but its state before reading is a pair of amplitudes.
+
+alt_explanation: >-
+  Separate two things that are always the same for a bit: the state, and what you see when you
+  look. For a bit they're identical. For a qubit, the state is a pair of numbers (α, β), and
+  looking gives only 0 or 1: 0 with probability |α|², 1 with probability |β|². Quantum computing
+  is about doing clever things to the state before you look.
+
+common_misconceptions:
+  - A qubit stores an infinite amount of usable information.
+  - A qubit is just a bit we don't know the value of.

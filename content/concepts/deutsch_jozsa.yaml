@@ -1,0 +1,8 @@
+id: deutsch_jozsa
+title: Oracles and Deutsch–Jozsa
+summary: >-
+  A first algorithm where one quantum query answers a question that needs many classical queries.
+status: stub
+prerequisites: [interference, cnot]
+estimated_minutes: 6
+course_topic: "Algorithms warm-up: Deutsch–Jozsa and Bernstein–Vazirani"

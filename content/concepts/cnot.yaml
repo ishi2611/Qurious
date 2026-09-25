@@ -1,0 +1,87 @@
+id: cnot
+title: CNOT and two-qubit gates
+summary: >-
+  CNOT flips a target qubit when the control qubit is 1. It's the reversible cousin of XOR, and
+  the gate that lets qubits influence each other.
+status: draft
+prerequisites: [multiple_qubits, classical_bits]
+estimated_minutes: 4
+course_topic: "Two-qubit gates: CNOT, CZ, SWAP"
+
+hook: >-
+  CNOT is the gate that lets one qubit affect another. It's the ingredient that turns two
+  independent qubits into an entangled pair.
+
+intuition:
+  analogy: >-
+    "If the first switch is on, flip the second one." On 0s and 1s, CNOT behaves exactly like
+    this classical rule: the target becomes target XOR control, and the control stays as it was.
+  where_it_breaks: >-
+    Classically, the control is simply 0 or 1. When the control qubit is in a superposition,
+    CNOT doesn't secretly check it and pick one branch; it acts on both branches of the
+    superposition at once, and the result can be entangled. Also unlike plain XOR, CNOT keeps
+    the control qubit, so nothing is lost and applying it twice undoes it.
+
+interactive:
+  type: circuit_sandbox
+  props: { num_qubits: 2, allowed_gates: [X, H, CNOT], show_bloch: false }
+  caption: Put an X on q0 and then a CNOT, and q1 flips. Now try H on q0 before the CNOT, and look closely at which outcomes appear.
+
+math:
+  - level: 1
+    latex: '\mathrm{CNOT}\,|a, b\rangle = |a,\; a \oplus b\rangle'
+    plain_english: The control a stays; the target becomes b XOR a (it flips when a = 1).
+  - level: 2
+    latex: '\mathrm{CNOT} = \begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&0&1\\0&0&1&0\end{pmatrix}'
+    plain_english: >-
+      With rows and columns ordered |00⟩, |01⟩, |10⟩, |11⟩ (control first), CNOT leaves the first
+      two alone and swaps the last two.
+
+puzzle:
+  type: circuit_goal
+  prompt: Make |11⟩ using one X gate and one CNOT.
+  num_qubits: 2
+  allowed_gates: [X, CNOT]
+  max_gates: 2
+  required_gates: [CNOT]
+  target_probabilities: { "11": 1 }
+  hints:
+    - The CNOT only flips the target if the control is already 1.
+    - Put the X on the control qubit first.
+
+checks:
+  - question: CNOT, with q0 as control and q1 as target, acts on |10⟩. What's the result?
+    options: ["|10⟩", "|11⟩", "|01⟩"]
+    answer: 1
+    explanation: The control q0 is 1, so the target q1 flips from 0 to 1, giving |11⟩.
+    misconception_addressed: Confusing which qubit is the control.
+  - question: Why is CNOT reversible when XOR (a, b → a ⊕ b) isn't?
+    options:
+      - "CNOT keeps the control bit, so the inputs can always be recovered"
+      - "CNOT is faster"
+      - "XOR is reversible too"
+    answer: 0
+    explanation: >-
+      XOR maps two bits to one, so different inputs collide. CNOT outputs both a and a ⊕ b, from
+      which a and b can be recovered. Applying CNOT again does exactly that.
+    misconception_addressed: Quantum gates can discard information like classical gates.
+
+diagnostic:
+  - question: CNOT (control q0, target q1) acts on |11⟩. What's the result?
+    options: ["|11⟩", "|10⟩", "|01⟩"]
+    answer: 1
+    explanation: The control is 1, so the target flips from 1 to 0.
+
+alt_explanation: >-
+  Write out all four inputs: 00 → 00, 01 → 01, 10 → 11, 11 → 10. The first digit never changes,
+  and the second flips only when the first is 1. For a superposition input, apply that rule to
+  each term separately and keep the amplitudes.
+
+common_misconceptions:
+  - CNOT measures the control qubit to decide what to do.
+  - The control qubit is never affected by anything the target does (true for 0/1 inputs, but phases can "kick back" onto the control, which you'll meet in algorithms).
+
+reviewer_notes:
+  - >-
+    The phase-kickback remark in common_misconceptions is correct but advanced. Keep it or
+    remove it for this audience?

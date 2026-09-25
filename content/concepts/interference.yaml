@@ -1,0 +1,8 @@
+id: interference
+title: Interference
+summary: >-
+  Amplitudes can add up or cancel out, which is how quantum algorithms steer toward right answers.
+status: stub
+prerequisites: [phase]
+estimated_minutes: 5
+course_topic: "Deutsch–Jozsa, QFT"

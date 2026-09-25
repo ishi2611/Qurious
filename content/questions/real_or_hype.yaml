@@ -1,0 +1,14 @@
+id: real_or_hype
+question: Is quantum computing real, or just hype?
+status: draft
+enabled: false
+order: 4
+preview: >-
+  Both. Real quantum computers exist and have done things classical computers struggle to
+  reproduce, but today's machines are small and error-prone. Most headline applications need
+  error-corrected machines that are still being built.
+targets: [physical_qubits, error_correction, quantum_advantage]
+reward:
+  type: coming_soon
+  title: Protect a qubit from noise
+  description: Encode one qubit into three and watch a simple code catch an error.

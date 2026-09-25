@@ -1,0 +1,16 @@
+id: break_encryption
+question: Can quantum computers break my passwords or Bitcoin?
+status: draft
+enabled: false
+order: 1
+preview: >-
+  A large enough quantum computer could break the public-key cryptography that protects most
+  web traffic and cryptocurrency signatures. No such machine exists yet, and replacement
+  "post-quantum" schemes are already being rolled out.
+targets: [shor, grover, post_quantum_crypto]
+reward:
+  type: coming_soon
+  title: Break a toy RSA key
+  description: Use period finding to factor a small number and recover a private key.
+reviewer_notes:
+  - Passwords are usually protected by hashing, which Grover only speeds up quadratically; the lesson should separate that from Shor's threat to public-key signatures.

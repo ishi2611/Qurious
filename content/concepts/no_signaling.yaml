@@ -1,0 +1,113 @@
+id: no_signaling
+title: "No-signaling: why entanglement can't send messages"
+summary: >-
+  Whatever Alice does to her half of an entangled pair, Bob's results on their own stay
+  exactly as random as before. The correlation only shows up when they compare notes.
+status: draft
+prerequisites: [bell_states]
+estimated_minutes: 5
+course_topic: "Teleportation discussion: entanglement is not a communication channel"
+
+hook: >-
+  Entangled results line up no matter how far apart they are. So why can't you use that to send
+  a message? This lesson resolves that tension exactly.
+question_hooks:
+  entanglement_ftl: >-
+    This is the step your question has been building to: how results can be correlated across
+    any distance, and still carry no message faster than light.
+  quantum_teleportation: >-
+    Teleportation uses entanglement, yet it still has to send ordinary bits. This lesson shows
+    why no protocol can skip that step.
+
+intuition:
+  analogy: >-
+    Picture two "magic" dice, rolled in different cities, that always land on the same number.
+    Alice rolls a 4 and knows Bob rolled a 4. But she couldn't choose to roll a 4, so she can't
+    use the dice to send "4." To Bob, his rolls look like any ordinary fair die.
+  where_it_breaks: >-
+    Magic dice could just be pre-programmed with the same sequence; entangled qubits can't be
+    (that's Bell's theorem again). And unlike a die roll, Alice does get a real choice: which
+    basis to measure in, or whether to measure at all. The key fact is that no choice she makes
+    changes the statistics of Bob's results on their own. He sees a fair 50/50 sequence no matter
+    what. Only when they compare notes, over ordinary channels no faster than light, does the
+    correlation appear.
+
+interactive:
+  type: bell_lab
+  props: { mode: no_signal }
+  caption: You are Alice. Measure in the 0/1 basis, the +/− basis, or not at all. Bob's side keeps a running tally. Then "compare notes" and watch the correlations appear.
+
+math:
+  - level: 1
+    latex: 'P_{\text{Bob}}(0) = P_{\text{Bob}}(1) = \tfrac{1}{2} \quad \text{whatever Alice does}'
+    plain_english: For a Bell pair, Bob's own results are always a fair coin, however Alice measures.
+  - level: 2
+    latex: '\rho_B = \operatorname{Tr}_A \big(|\Phi^+\rangle\langle\Phi^+|\big) = \tfrac{1}{2} I'
+    plain_english: >-
+      The complete description of Bob's qubit on its own (its "reduced state") is a 50/50 mix,
+      and it contains everything that can be predicted about his measurements.
+  - level: 3
+    latex: '\operatorname{Tr}_A\!\big[(U_A \otimes I)\,\rho_{AB}\,(U_A^\dagger \otimes I)\big] = \operatorname{Tr}_A\,\rho_{AB}'
+    plain_english: >-
+      Nothing Alice does to her qubit alone (gates or measurements, as long as Bob isn't told the
+      result) changes Bob's reduced state. That's the no-signaling theorem.
+
+puzzle:
+  type: numeric
+  prompt: >-
+    Alice measures her half of |Φ⁺⟩ and gets 1. Bob hasn't heard from her yet. What probability
+    should Bob assign to getting 1 when he measures?
+  answer: 0.5
+  tolerance: 0.001
+  hints:
+    - Bob doesn't know Alice's result, or even whether she measured.
+    - From Bob's side, nothing has changed.
+
+checks:
+  - question: Alice measures her qubit in a different basis, hoping to signal Bob. What does Bob see, without talking to Alice?
+    options:
+      - "His results immediately change pattern"
+      - "Still a random 50/50 sequence; nothing he can detect has changed"
+      - "His qubit stops working"
+    answer: 1
+    explanation: >-
+      Bob's statistics are identical whatever Alice does. Any pattern only appears when Bob's
+      results are lined up with Alice's, and that needs her records.
+    misconception_addressed: Measuring one qubit visibly changes the other qubit's results.
+  - question: When does the correlation between Alice's and Bob's results become visible?
+    options:
+      - "Instantly, to Bob"
+      - "Only when they compare records, which takes ordinary communication at or below light speed"
+      - "Never"
+    answer: 1
+    explanation: >-
+      The correlation is real, but it lives in the comparison of two lists. Each list alone looks
+      random, so no information arrives faster than the comparison can.
+    misconception_addressed: Correlation equals communication.
+
+diagnostic:
+  - question: Can entanglement be used to send a message faster than light?
+    options:
+      - "Yes, because measuring one qubit changes the other instantly"
+      - "No. Each side's results look random on their own, so no message gets through until they communicate normally"
+      - "Only over short distances"
+    answer: 1
+    explanation: The no-signaling theorem says local actions on one side don't change the other side's statistics.
+
+alt_explanation: >-
+  Put yourself in Bob's shoes. All you ever get is your own list of 0s and 1s. Whatever Alice
+  does, that list is a fair coin sequence, because your qubit on its own is always described by
+  the same 50/50 mix. A message needs something you can notice changing; nothing on your side
+  ever does. The matching only appears when your list sits next to Alice's, and her list has to
+  travel to you the ordinary way.
+
+common_misconceptions:
+  - Entanglement lets you send signals instantly.
+  - Correlation means one result causes the other.
+  - Choosing a measurement basis is a way to "steer" the other side's results into a message.
+
+reviewer_notes:
+  - >-
+    I avoided phrases like "measuring one instantly affects the other" and described
+    correlations instead, to stay interpretation-neutral. Please check this matches how you want
+    the platform to talk about collapse at a distance.

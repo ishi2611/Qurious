@@ -1,0 +1,86 @@
+id: quantum_gates
+title: "Quantum gates: X, Z, H"
+summary: >-
+  Gates are reversible operations on qubits. X swaps |0⟩ and |1⟩, Z flips the sign of |1⟩, and
+  H creates and undoes superpositions. Circuits are sequences of gates.
+status: draft
+prerequisites: [measurement]
+estimated_minutes: 5
+course_topic: "Single-qubit gates: X, Y, Z, H, S, T"
+
+hook: >-
+  Everything a quantum computer does, it does with gates. Three of them (X, Z and H) are enough
+  to build every circuit on your path, including the one that creates entanglement.
+
+intuition:
+  analogy: >-
+    Gates are like moves on a Rubik's cube: each is a fixed transformation of the whole state,
+    and every move can be undone.
+  where_it_breaks: >-
+    Cube moves shuffle stickers you can see; gates transform amplitudes you can't see directly,
+    only through measurement. A cube also has a finite set of moves, while qubits have a
+    continuum of possible gates (any rotation). What carries over exactly is reversibility:
+    every quantum gate can be undone, unlike the AND gate you met earlier.
+
+interactive:
+  type: circuit_sandbox
+  props: { num_qubits: 1, allowed_gates: [X, Z, H], show_bloch: true }
+  caption: Drag gates onto the wire. The bars and the sphere update instantly. Try H, then Z, then H, and compare it with X.
+
+math:
+  - level: 1
+    latex: 'X = \begin{pmatrix}0&1\\1&0\end{pmatrix}, \quad Z = \begin{pmatrix}1&0\\0&-1\end{pmatrix}, \quad H = \tfrac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}'
+    plain_english: >-
+      X swaps the two amplitudes, Z flips the sign of the |1⟩ amplitude, and H mixes them (sum
+      on top, difference on the bottom).
+  - level: 2
+    latex: 'HH = I, \qquad HZH = X'
+    plain_english: >-
+      Doing H twice gets you back where you started. And sandwiching Z between two H's acts
+      exactly like X, a first taste of how gates combine.
+  - level: 3
+    latex: 'U^\dagger U = I'
+    plain_english: >-
+      Every gate U is unitary: it has an inverse (its conjugate transpose), and it keeps the
+      probabilities adding up to 1.
+
+puzzle:
+  type: circuit_goal
+  prompt: Starting from |0⟩, make a state that gives 1 every time, without using the X gate.
+  num_qubits: 1
+  allowed_gates: [H, Z]
+  target_probabilities: { "1": 1 }
+  hints:
+    - Z only changes a sign, which a measurement can't see on its own.
+    - Use H to turn the sign difference into a 0/1 difference.
+    - Try H, then Z, then H.
+
+checks:
+  - question: What does Z do to |0⟩?
+    options: ["Turns it into |1⟩", "Leaves it unchanged", "Turns it into |+⟩"]
+    answer: 1
+    explanation: Z flips the sign of the |1⟩ amplitude only. |0⟩ has no |1⟩ part, so it's unchanged.
+    misconception_addressed: Z is a "flip," like X.
+  - question: You apply H to |0⟩, then H again, then measure. What do you get?
+    options: ["0 every time", "0 or 1, 50/50", "1 every time"]
+    answer: 0
+    explanation: >-
+      The second H undoes the first, so you're back at |0⟩. Two "randomizing" steps cancel, which
+      is interference in miniature.
+    misconception_addressed: Applying a superposition gate twice makes the result "more random."
+
+diagnostic:
+  - question: What does the X gate do to |0⟩?
+    options: ["Leaves it unchanged", "Turns it into |1⟩", "Measures it"]
+    answer: 1
+    explanation: X swaps the amplitudes of |0⟩ and |1⟩, like a classical NOT.
+
+alt_explanation: >-
+  Keep two numbers in mind: the amplitude of |0⟩ (top) and of |1⟩ (bottom). X swaps them. Z
+  multiplies the bottom one by −1. H replaces them with their sum and their difference, both
+  divided by √2. Starting from (1, 0): H gives (0.71, 0.71), Z gives (0.71, −0.71), and H again
+  gives (0, 1). That's |1⟩.
+
+common_misconceptions:
+  - Gates are like measurements.
+  - Gates that don't change the probabilities do nothing.

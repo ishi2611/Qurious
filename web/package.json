@@ -12,12 +12,15 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "sim:export": "tsx scripts/export-random-circuits.ts"
+    "sim:export": "tsx scripts/export-random-circuits.ts",
+    "content:math": "tsx scripts/validate-math.ts"
   },
   "dependencies": {
+    "katex": "^0.18.9",
     "next": "16.3.6",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "yaml": "^2.9.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

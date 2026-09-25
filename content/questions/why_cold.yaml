@@ -1,0 +1,14 @@
+id: why_cold
+question: Why do quantum computers need to be so cold?
+status: draft
+enabled: false
+order: 5
+preview: >-
+  Qubits lose their quantum behavior when their surroundings disturb them, and heat is a major
+  source of disturbance. Leading designs like superconducting qubits run at around a hundredth
+  of a degree above absolute zero; other designs use different tricks to stay isolated.
+targets: [physical_qubits]
+reward:
+  type: coming_soon
+  title: Turn up the noise
+  description: Add noise to a qubit and watch its Bloch vector shrink as it decoheres.

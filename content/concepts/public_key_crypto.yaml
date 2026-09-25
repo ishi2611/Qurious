@@ -1,0 +1,8 @@
+id: public_key_crypto
+title: RSA and ECC basics
+summary: >-
+  Today's internet security relies on math problems (factoring, discrete logs) that are hard for classical computers.
+status: stub
+prerequisites: [classical_bits]
+estimated_minutes: 5
+course_topic: "Post-quantum crypto and Q-Day"

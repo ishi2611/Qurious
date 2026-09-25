@@ -1,0 +1,107 @@
+id: teleportation
+title: Quantum teleportation
+summary: >-
+  Using a shared entangled pair plus two ordinary bits, Alice transfers an unknown qubit state
+  to Bob. Her original is destroyed, and nothing travels faster than light.
+status: draft
+prerequisites: [bell_states, no_cloning, no_signaling]
+estimated_minutes: 6
+course_topic: "Quantum teleportation and superdense coding"
+
+hook: >-
+  Teleportation is real. It has been done in labs many times, including between the ground and
+  a satellite more than 1,000 km away. But what moves isn't matter, and it can't beat light
+  speed. Here's what actually happens.
+
+intuition:
+  analogy: >-
+    It's like faxing a document with a fax machine that shreds the original: the information
+    ends up at the far end, the original is gone, and a phone line still has to carry a message.
+  where_it_breaks: >-
+    A fax sends the whole document down the line. Teleportation sends only 2 ordinary bits, and
+    those bits on their own say nothing about the state. The rest is carried by the entangled
+    pair Alice and Bob set up in advance. Also, nothing physical travels: Bob's qubit was always
+    with Bob; it just ends up in the state Alice's qubit used to have.
+
+interactive:
+  type: teleport_lab
+  props: { mode: guided }
+  caption: Step through the protocol. Watch Bob's qubit after each step. Before Alice's two bits arrive, it's random noise; after his correction, it matches Alice's original.
+
+math:
+  - level: 1
+    latex: '|\psi\rangle_C \otimes |\Phi^+\rangle_{AB}'
+    plain_english: >-
+      The start: Alice holds the unknown qubit C and one half (A) of a Bell pair. Bob holds the
+      other half (B).
+  - level: 2
+    latex: '\text{Bob applies } Z^{m_1} X^{m_2} \text{ (first } X \text{ if } m_2 = 1\text{, then } Z \text{ if } m_1 = 1\text{)}'
+    plain_english: >-
+      Alice measures her two qubits and gets two bits, m₁ and m₂. Bob uses them to pick a
+      correction: nothing, X, Z, or both.
+  - level: 3
+    latex: '\tfrac{1}{2}\sum_{m_1, m_2 \in \{0,1\}} |m_1 m_2\rangle_{CA} \otimes X^{m_2} Z^{m_1} |\psi\rangle_B'
+    plain_english: >-
+      After Alice applies CNOT (C controls A) and then H to C, the whole three-qubit state can be
+      rewritten like this. Each of her four possible results is equally likely, and each leaves
+      Bob's qubit in a scrambled version of |ψ⟩ that the matching correction undoes.
+
+puzzle:
+  type: numeric
+  prompt: How many classical bits must Alice send to Bob for him to recover the state?
+  answer: 2
+  tolerance: 0
+  hints:
+    - Alice measures two qubits.
+
+checks:
+  - question: What is transferred from Alice to Bob in quantum teleportation?
+    options:
+      - "The particle itself"
+      - "The quantum state of a qubit, using a shared entangled pair plus 2 classical bits"
+      - "A copy of the qubit, while Alice keeps the original"
+    answer: 1
+    explanation: >-
+      Only the state moves, onto Bob's own qubit. Alice's qubit is left in a state that depends on
+      her measurement results, not in |ψ⟩, as no-cloning requires.
+    misconception_addressed: Teleportation moves matter, or makes a copy.
+  - question: Why can't teleportation work faster than light?
+    options:
+      - "It can; the state arrives instantly"
+      - "Bob can't recover the state until Alice's 2 classical bits reach him; before that, his qubit looks like 50/50 noise"
+      - "Because the particles are too slow"
+    answer: 1
+    explanation: >-
+      Before Bob knows m₁ and m₂, his qubit's statistics are the same as for a random coin (that's
+      no-signaling again). The bits travel at light speed or slower, so the transfer does too.
+    misconception_addressed: Entanglement makes teleportation instantaneous.
+
+diagnostic:
+  - question: After quantum teleportation, what has happened to Alice's original qubit state?
+    options:
+      - "She still has it; teleportation makes a copy"
+      - "It's gone from her side; only Bob ends up with the state"
+      - "Both of them have half of it"
+    answer: 1
+    explanation: Alice's measurement destroys her copy of the state; that's consistent with no-cloning.
+
+alt_explanation: >-
+  Think of it in four moves. 1) Alice and Bob share a Bell pair ahead of time. 2) Alice
+  entangles her unknown qubit with her half of the pair (CNOT, then H). 3) She measures her two
+  qubits, which destroys her copy of the state and gives two random bits. 4) She phones Bob
+  the two bits, and he applies the matching fix. The state has moved from her qubit to his, the
+  original is gone, and the phone call sets the speed limit.
+
+common_misconceptions:
+  - Teleportation moves matter or energy.
+  - Teleportation is instantaneous.
+  - The original stays behind, so it's really copying.
+
+reviewer_notes:
+  - >-
+    "More than 1,000 km": ground-to-satellite teleportation with the Micius satellite (Ren et
+    al., Nature 2017) reported distances up to about 1,400 km. Please confirm the phrasing.
+  - >-
+    Correction order: with the CNOT(C→A), H(C) convention, Bob's state after results (m₁, m₂) is
+    X^{m₂} Z^{m₁}|ψ⟩, so he applies X^{m₂} first and then Z^{m₁}. I checked the four cases by
+    hand, and the teleport_lab simulation tests all of them.

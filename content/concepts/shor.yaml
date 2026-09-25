@@ -1,0 +1,8 @@
+id: shor
+title: Shor's algorithm
+summary: >-
+  Factoring large numbers by finding the period of a^x mod N with a quantum computer.
+status: stub
+prerequisites: [qft_period_finding, public_key_crypto]
+estimated_minutes: 7
+course_topic: "Shor's algorithm I and II"

@@ -1,0 +1,8 @@
+id: physical_qubits
+title: Physical qubits
+summary: >-
+  How real qubits are built (superconducting circuits, trapped ions, photons, neutral atoms) and why some need extreme cold.
+status: stub
+prerequisites: [decoherence]
+estimated_minutes: 6
+course_topic: "Hardware: superconducting, trapped ions, photonics, neutral atoms"

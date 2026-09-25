@@ -1,0 +1,17 @@
+id: parallel_universes
+question: Did Google prove that parallel universes exist?
+status: draft
+enabled: false
+order: 2
+preview: >-
+  No. Google's quantum chip finished a benchmark calculation that would take classical
+  supercomputers far longer, and Google's announcement mentioned the many-worlds idea. But the
+  experiment's results are predicted equally well by every interpretation of quantum mechanics,
+  so it can't settle which one is right.
+targets: [quantum_advantage, interpretations]
+reward:
+  type: coming_soon
+  title: Run a random-circuit benchmark
+  description: Build a small random circuit and see why its output is hard to reproduce classically.
+reviewer_notes:
+  - Refers to the December 2024 Willow random-circuit-sampling announcement. Please confirm wording.

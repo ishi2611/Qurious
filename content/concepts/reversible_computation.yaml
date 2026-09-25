@@ -1,0 +1,8 @@
+id: reversible_computation
+title: Reversible computation
+summary: >-
+  Quantum gates can always be undone, so classical logic like AND must be rebuilt in a reversible way (Toffoli).
+status: stub
+prerequisites: [cnot]
+estimated_minutes: 5
+course_topic: "Two-qubit gates; compiling the Toffoli gate"

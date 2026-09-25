@@ -1,0 +1,16 @@
+id: entanglement_ftl
+question: Is entanglement faster than light?
+status: draft
+enabled: true
+order: 6
+preview: >-
+  Short version: no. Entanglement can't carry a message faster than light, even though
+  measurements on entangled particles line up no matter how far apart they are. Both of those
+  statements are true at once, and seeing why is the interesting part.
+targets: [no_signaling]
+reward:
+  type: bell_signal_game
+  title: Try to beat the speed of light
+  description: >-
+    You control Alice's measurements on a stream of entangled pairs. Try to send Bob a message,
+    then see what he actually receives.

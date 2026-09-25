@@ -1,0 +1,8 @@
+id: interpretations
+title: Interpretations of quantum mechanics
+summary: >-
+  The math is agreed on; what it says about reality (collapse, many worlds, and others) is not.
+status: stub
+prerequisites: [measurement, entanglement]
+estimated_minutes: 4
+course_topic: "History and interpretations"

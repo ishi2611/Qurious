@@ -1,0 +1,100 @@
+id: superposition
+title: Superposition
+summary: >-
+  A qubit can be in a weighted combination of |0⟩ and |1⟩: a definite state of its own that
+  gives 0 or 1 at random when measured.
+status: draft
+prerequisites: [qubit]
+estimated_minutes: 4
+course_topic: "Fundamental quantum properties: superposition"
+
+hook: >-
+  Almost every popular claim about quantum computers ("it tries every answer at once") starts
+  with superposition. Knowing what it really means is how you tell the real claims from the
+  hype.
+
+intuition:
+  analogy: >-
+    Think of a musical chord made of two notes. The chord is a new sound in its own right, not
+    "sometimes one note and sometimes the other." A superposition is similarly a new state,
+    built out of |0⟩ and |1⟩.
+  where_it_breaks: >-
+    When you hear a chord, you hear both notes. When you measure a superposition, you get only
+    one outcome, 0 or 1, at random. So "a qubit is 0 and 1 at the same time" is misleading: it's
+    in one definite state that isn't |0⟩ or |1⟩, and a measurement gives you only one of them.
+    Whether a state counts as "a superposition" also depends on which basis you describe it in.
+    The state (|0⟩+|1⟩)/√2 is a superposition of 0 and 1, but it's a single basis state (|+⟩) in
+    another basis.
+
+interactive:
+  type: bloch_sphere
+  props: { mode: polar, gates: [H, X], show_probabilities: true, allow_measure: true }
+  caption: Try the H gate on |0⟩ and on |1⟩. Both land on the equator (50/50), but on opposite sides. That difference is real, as the next check shows.
+
+math:
+  - level: 1
+    latex: '|+\rangle = \tfrac{1}{\sqrt{2}}\left(|0\rangle + |1\rangle\right)'
+    plain_english: Equal amounts of |0⟩ and |1⟩, so measuring gives 0 or 1 with 50% each.
+  - level: 2
+    latex: '|-\rangle = \tfrac{1}{\sqrt{2}}\left(|0\rangle - |1\rangle\right)'
+    plain_english: >-
+      Also 50/50 when measured, but a different state. The minus sign is a physical difference
+      that later shows up as interference.
+  - level: 2
+    latex: 'H|0\rangle = |+\rangle, \qquad H|1\rangle = |-\rangle, \qquad H|+\rangle = |0\rangle'
+    plain_english: >-
+      The Hadamard gate H creates these superpositions, and applying it again undoes them. That
+      wouldn't be possible if |+⟩ were just "a random 0 or 1."
+
+puzzle:
+  type: circuit_goal
+  prompt: Starting from |0⟩, make the qubit land on 1 exactly half the time.
+  num_qubits: 1
+  allowed_gates: [H, X]
+  target_probabilities: { "0": 0.5, "1": 0.5 }
+  hints:
+    - One gate is enough.
+    - H puts |0⟩ on the equator.
+
+checks:
+  - question: "|+⟩ and |−⟩ both give 0 or 1 with 50% each. Are they the same state?"
+    options:
+      - "Yes, same probabilities means same state"
+      - "No, they differ by a sign, which you can detect by applying H before measuring"
+      - "No, |−⟩ has negative probabilities"
+    answer: 1
+    explanation: >-
+      H turns |+⟩ into |0⟩ and |−⟩ into |1⟩. After an H, one always reads 0 and the other always
+      reads 1. Probabilities in one basis don't tell the whole story.
+    misconception_addressed: Two states with the same measurement odds are the same state.
+  - question: What does "the qubit is in a superposition of 0 and 1" actually mean?
+    options:
+      - "It's 0 and 1 at the same time, and you can read both values"
+      - "It's in a definite state that isn't |0⟩ or |1⟩; a measurement gives one of them, with odds set by the amplitudes"
+      - "It switches rapidly back and forth between 0 and 1"
+    answer: 1
+    explanation: >-
+      A superposition is one definite state. It isn't a flicker between values, and you never
+      read out both. What you get is one outcome, chosen at random with the Born-rule odds.
+    misconception_addressed: Superposition means "both values, readable at once" or "rapid switching."
+
+diagnostic:
+  - question: A qubit is prepared in (|0⟩ + |1⟩)/√2 and measured. This is repeated 1000 times with fresh qubits. What do you see?
+    options:
+      - "About 500 zeros and 500 ones"
+      - "1000 zeros"
+      - "Every reading shows \"0 and 1\""
+    answer: 0
+    explanation: Each measurement gives 0 or 1 with 50% each, so the counts come out near half and half.
+
+alt_explanation: >-
+  Forget "0 and 1 at once." Think of |0⟩ and |1⟩ as two directions, and a superposition as a
+  direction in between. The qubit really is pointing that way; it isn't secretly at |0⟩ or |1⟩.
+  Measuring asks "is it closer to |0⟩ or |1⟩?" and gets a random yes or no, weighted by how close
+  it is. Gates can turn the in-between direction into a clean |0⟩, which proves nothing was
+  hidden.
+
+common_misconceptions:
+  - A qubit in superposition is 0 and 1 at the same time, and a quantum computer reads all the values.
+  - Superposition means we just don't know the value yet.
+  - "|+⟩ and |−⟩ are the same because both are 50/50."

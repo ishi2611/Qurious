@@ -1,0 +1,86 @@
+id: bell_states
+title: Bell states
+summary: >-
+  The four Bell states are the standard maximally entangled pairs: "always the same" or
+  "always opposite" in the 0/1 basis, each in a + and a − version.
+status: draft
+prerequisites: [entanglement]
+estimated_minutes: 4
+course_topic: "Entanglement: Bell states"
+
+hook: >-
+  The four Bell states are the standard entangled pairs: the alphabet that entanglement
+  experiments and teleportation are written in.
+
+intuition:
+  analogy: >-
+    Think of four kinds of matched pairs: two kinds that always agree (00 or 11), two kinds that
+    always disagree (01 or 10). Within each kind, the two versions differ by a hidden sign.
+  where_it_breaks: >-
+    With matched socks, there's nothing like a hidden sign. For Bell states, the + and − versions
+    give identical statistics when both qubits are measured in the 0/1 basis, yet they're
+    perfectly distinguishable with the right gates first. The sign is real, just invisible to
+    one particular question.
+
+interactive:
+  type: bell_lab
+  props: { mode: correlations }
+  caption: Pick a Bell state and measure both qubits many times, in the 0/1 basis or the +/− basis. Φ⁺ and Φ⁻ look identical in one basis and different in the other.
+
+math:
+  - level: 1
+    latex: '|\Phi^\pm\rangle = \tfrac{1}{\sqrt{2}}\left(|00\rangle \pm |11\rangle\right), \qquad |\Psi^\pm\rangle = \tfrac{1}{\sqrt{2}}\left(|01\rangle \pm |10\rangle\right)'
+    plain_english: Φ ("phi") states always agree in the 0/1 basis; Ψ ("psi") states always disagree.
+  - level: 2
+    latex: '\{\,|\Phi^+\rangle, |\Phi^-\rangle, |\Psi^+\rangle, |\Psi^-\rangle\,\} \text{ is an orthonormal basis}'
+    plain_english: >-
+      The four Bell states are perfectly distinguishable from one another, and any two-qubit
+      state can be written as a combination of them.
+
+puzzle:
+  type: circuit_goal
+  prompt: "Make |Ψ⁺⟩ = (|01⟩ + |10⟩)/√2: results always opposite, each pattern half the time, with a plus sign."
+  num_qubits: 2
+  allowed_gates: [H, X, Z, CNOT]
+  target_probabilities: { "01": 0.5, "10": 0.5 }
+  target_amplitudes: { "01": [0.70710678, 0], "10": [0.70710678, 0] }
+  hints:
+    - Start from the circuit that makes |Φ⁺⟩ (H, then CNOT).
+    - An X on q1 turns "always the same" into "always opposite." It works before or after the CNOT.
+
+checks:
+  - question: "You measure both qubits of |Ψ⁺⟩ in the 0/1 basis. What can you get?"
+    options: ["00 or 11", "01 or 10", "Always 01"]
+    answer: 1
+    explanation: Ψ states always disagree in the 0/1 basis, and for Ψ⁺ both disagreeing patterns are equally likely.
+    misconception_addressed: All Bell states give matching results.
+  - question: "|Φ⁺⟩ and |Φ⁻⟩ give the same 0/1 statistics. How can you tell them apart?"
+    options:
+      - "You can't, because they're the same state"
+      - "Apply gates (for example CNOT, then H on q0) before measuring; that maps each Bell state to a different result"
+      - "Measure them more times"
+    answer: 1
+    explanation: >-
+      This is a Bell measurement: CNOT then H turns each Bell state into a different basis state
+      (|00⟩, |01⟩, |10⟩ or |11⟩), so one reading identifies it. Teleportation relies on exactly
+      this.
+    misconception_addressed: States with identical statistics in one basis are the same state.
+
+diagnostic:
+  - question: Which of these is a Bell state?
+    options:
+      - "(1/√2)(|01⟩ − |10⟩)"
+      - "(1/√2)(|00⟩ + |01⟩)"
+      - "|11⟩"
+    answer: 0
+    explanation: (|01⟩ − |10⟩)/√2 is |Ψ⁻⟩. The second isn't entangled and the third isn't a superposition.
+
+alt_explanation: >-
+  Start from |Φ⁺⟩ = (|00⟩ + |11⟩)/√2. Flip q1 with X and you get "always opposite," |Ψ⁺⟩. Apply
+  Z to either qubit and the |11⟩ term changes sign, giving |Φ⁻⟩. Do both and you get |Ψ⁻⟩. So
+  the four Bell states are one pair plus the four ways of tweaking one of its qubits (do nothing,
+  X, Z, or both). That's why Alice can later encode two bits by tweaking only her half.
+
+common_misconceptions:
+  - Entangled pairs always give the same result.
+  - A minus sign in a state has no physical effect.

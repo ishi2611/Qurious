@@ -1,0 +1,93 @@
+id: vectors_and_kets
+title: State vectors and ket notation
+summary: >-
+  A quantum state is written as amounts (amplitudes) of basis states like |0⟩ and |1⟩; squaring
+  the size of an amplitude gives a probability.
+status: draft
+prerequisites: [probability_basics]
+estimated_minutes: 4
+course_topic: "Qubit: state space, Dirac notation"
+
+hook: >-
+  Every state on your path will be written as a ket, like |0⟩ or 0.6|0⟩ + 0.8|1⟩. This lesson
+  turns that notation from symbols into something you can read at a glance.
+
+intuition:
+  analogy: >-
+    Think of directions on a map. Any direction is some amount east plus some amount north. A
+    quantum state is similarly some amount of |0⟩ plus some amount of |1⟩. The amounts are
+    called amplitudes, and the "|…⟩" brackets (kets) just label the basis states.
+  where_it_breaks: >-
+    Map directions live in physical space; |0⟩ and |1⟩ don't point anywhere in the room. On a map
+    the amounts are ordinary numbers. Amplitudes can be negative, and in general they're complex
+    numbers (you'll meet those later; this path only needs real ones). Most importantly, the
+    *squared* size of each amplitude is a probability, so the squares must add up to 1. Maps have
+    no such rule.
+
+interactive:
+  type: amplitude_bars
+  props: {}
+  caption: Turn the dial to change the amplitudes. The bars show their squares, which are the probabilities. Try making an amplitude negative, and notice the probabilities don't change.
+
+math:
+  - level: 1
+    latex: '|\psi\rangle = \alpha\,|0\rangle + \beta\,|1\rangle'
+    plain_english: The state "psi" is α parts |0⟩ plus β parts |1⟩. α and β are the amplitudes.
+  - level: 1
+    latex: '|0\rangle = \begin{pmatrix}1\\0\end{pmatrix}, \quad |1\rangle = \begin{pmatrix}0\\1\end{pmatrix}, \quad |\psi\rangle = \begin{pmatrix}\alpha\\\beta\end{pmatrix}'
+    plain_english: A ket is just a column of numbers, one amplitude per basis state.
+  - level: 2
+    latex: '|\alpha|^2 + |\beta|^2 = 1'
+    plain_english: >-
+      The squared sizes of the amplitudes are the probabilities of reading 0 or 1, so they must
+      add up to 1. A state that satisfies this is called normalized.
+
+puzzle:
+  type: numeric
+  prompt: A state has α = 0.6. What must |β|² be for it to be a valid (normalized) state?
+  answer: 0.64
+  tolerance: 0.001
+  hints:
+    - The squares of the amplitude sizes add up to 1.
+    - "0.6² = 0.36"
+
+checks:
+  - question: In |ψ⟩ = 0.8|0⟩ + 0.6|1⟩, what is the probability of reading 0?
+    options: ["0.8", "0.64", "0.36"]
+    answer: 1
+    explanation: The probability is the amplitude squared, and 0.8² = 0.64. (Reading 1 has 0.6² = 0.36; together they make 1.)
+    misconception_addressed: The amplitude itself is the probability.
+  - question: Which of these is a valid state?
+    options:
+      - "0.5|0⟩ + 0.5|1⟩"
+      - "(1/√2)|0⟩ − (1/√2)|1⟩"
+      - "|0⟩ + |1⟩"
+    answer: 1
+    explanation: >-
+      Only the second is normalized: (1/√2)² + (1/√2)² = ½ + ½ = 1. A negative amplitude is fine,
+      because it's squared. The first adds to 0.5 and the third to 2.
+    misconception_addressed: Amplitudes must be positive, or must add (not their squares) to 1.
+
+diagnostic:
+  - question: What does the ket |1⟩ stand for?
+    options:
+      - "The number one"
+      - "The basis state in which the qubit reads 1"
+      - "A 100% probability"
+    answer: 1
+    explanation: Kets label states. |1⟩ is the state that gives 1 every time it's measured.
+
+alt_explanation: >-
+  Read α|0⟩ + β|1⟩ like a recipe with two ingredients. The kets name the ingredients, and α and
+  β say how much of each. The recipe must be "full size": the squares of the amounts add to 1.
+  When you measure, you get one ingredient, chosen with probability equal to its amount squared.
+
+common_misconceptions:
+  - Amplitudes are probabilities.
+  - Negative amplitudes mean negative probabilities.
+
+reviewer_notes:
+  - >-
+    Prerequisite choice: I made this depend on probability_basics only, not complex_numbers, and
+    told learners honestly that amplitudes are complex in general. The v1 paths only use real
+    amplitudes. Please confirm you're happy with that simplification.

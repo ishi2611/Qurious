@@ -1,0 +1,86 @@
+id: classical_bits
+title: Bits and logic gates
+summary: >-
+  A bit is always exactly 0 or 1, reading it never changes it, and logic gates like AND
+  combine bits into new ones.
+status: draft
+prerequisites: []
+estimated_minutes: 3
+course_topic: "Classical computation: binary and logic gates"
+
+hook: >-
+  Every quantum idea ahead of you is defined by how it differs from an ordinary bit. Pin down
+  exactly what a bit does, and the quantum differences stop sounding mystical and start
+  sounding precise.
+
+intuition:
+  analogy: >-
+    A bit is like a light switch: it's either off (0) or on (1), and you can look at it as often
+    as you like without changing it. A logic gate is a little machine that takes switch
+    positions in and sets a switch position out. AND turns its output on only when both inputs
+    are on.
+  where_it_breaks: >-
+    Real switches can stick halfway or flicker; an ideal bit can't. The analogy also hides
+    something that will matter later: a gate like AND throws information away. If AND outputs 0,
+    you can't tell whether the inputs were 00, 01 or 10. Quantum gates are never allowed to lose
+    information like that.
+
+interactive:
+  type: bit_switches
+  props: { bits: 2, gate: AND }
+  caption: Flip the input bits and watch the AND and XOR outputs. Notice how many input patterns give the same AND output.
+
+math:
+  - level: 1
+    latex: 'n \text{ bits} \;\Rightarrow\; 2^n \text{ possible patterns}'
+    plain_english: >-
+      Three bits have 8 possible patterns (000 to 111), but at any moment they're in exactly one
+      of them.
+  - level: 2
+    latex: 'a \oplus b = (a + b) \bmod 2'
+    plain_english: >-
+      XOR ("exclusive or") outputs 1 when the two inputs differ. It will reappear as the CNOT
+      gate.
+
+puzzle:
+  type: numeric
+  prompt: How many different patterns can 5 bits be in?
+  answer: 32
+  tolerance: 0
+  hints:
+    - Each extra bit doubles the number of patterns.
+    - "2 × 2 × 2 × 2 × 2"
+
+checks:
+  - question: You look at a bit and see 1. Nothing touches it, and you look again. What do you see?
+    options: ["1", "0", "0 or 1 at random"]
+    answer: 0
+    explanation: >-
+      Reading a classical bit doesn't disturb it, so it stays 1. Keep this in mind: for qubits,
+      reading is not so innocent.
+    misconception_addressed: Observing something always changes it (true for qubits, not for bits).
+  - question: An AND gate outputs 0. What were its inputs?
+    options: ["Both 0", "Can't tell: they could be 00, 01 or 10", "Exactly one of them was 1"]
+    answer: 1
+    explanation: >-
+      Three different inputs give output 0, so the output alone can't tell you which one it was.
+      AND is irreversible: it loses information.
+    misconception_addressed: Every logic gate can be run backwards.
+
+diagnostic:
+  - question: How many possible patterns do 3 bits have, and how many are they in at once?
+    options:
+      - "8 possible patterns, exactly one at a time"
+      - "8 possible patterns, all 8 at once"
+      - "3 possible patterns, one at a time"
+    answer: 0
+    explanation: Each bit doubles the count (2 × 2 × 2 = 8), and bits are always in one definite pattern.
+
+alt_explanation: >-
+  Picture n coins lying flat on a table, each showing heads (1) or tails (0). There are 2^n
+  possible rows of coins, but the table shows exactly one row, and glancing at it doesn't flip
+  any coin. A logic gate is a rule like "put down a heads coin only if both of these are heads."
+
+common_misconceptions:
+  - A bit can hold values other than 0 or 1.
+  - Logic gates are always reversible.

@@ -1,0 +1,97 @@
+id: no_cloning
+title: No-cloning
+summary: >-
+  No process can make a perfect copy of an unknown quantum state. A CNOT "copier" works for
+  |0⟩ and |1⟩, but turns superpositions into entangled pairs instead of copies.
+status: draft
+prerequisites: [entanglement]
+estimated_minutes: 4
+course_topic: "QIS theory: no-cloning"
+
+hook: >-
+  If you could copy an unknown qubit, you could copy it many times and measure the copies to
+  learn its exact state. Quantum mechanics forbids this, with big consequences for security and
+  for teleportation.
+question_hooks:
+  quantum_teleportation: >-
+    Science fiction teleporters raise an old puzzle: is the person who arrives a copy? For
+    quantum teleportation the answer is settled by one rule: unknown states can't be copied.
+
+intuition:
+  analogy: >-
+    Imagine a photocopier that tries to copy a document by reading it, where reading a page
+    smudges it. You can never be sure your copy matches an original you haven't seen.
+  where_it_breaks: >-
+    A smudging copier is just a bad machine; a better one might exist. For quantum states, no
+    machine can work, and that follows from the math: any process that copies |0⟩ and |1⟩
+    perfectly must fail on their superpositions. What *is* allowed is making many copies of a
+    state whose recipe you know. You simply prepare it again.
+
+interactive:
+  type: cloning_attempt
+  props: {}
+  caption: Feed the CNOT "copier" |0⟩, |1⟩ and then |+⟩. The first two copy perfectly. Look at what comes out for |+⟩.
+
+math:
+  - level: 1
+    latex: '\mathrm{CNOT}\,\big(|+\rangle|0\rangle\big) = \tfrac{1}{\sqrt{2}}\left(|00\rangle + |11\rangle\right) \;\neq\; |+\rangle|+\rangle'
+    plain_english: >-
+      The would-be copier makes an entangled pair, not two copies of |+⟩. (Two real copies would
+      give all four outcomes, each 25% of the time.)
+  - level: 2
+    latex: '\text{No } U \text{ with } U\big(|\psi\rangle|0\rangle\big) = |\psi\rangle|\psi\rangle \text{ for every } |\psi\rangle'
+    plain_english: This is the no-cloning theorem. It rules out every possible machine, not only CNOT.
+  - level: 3
+    latex: '\langle\psi|\phi\rangle = \langle\psi|\phi\rangle^2 \;\Rightarrow\; \langle\psi|\phi\rangle \in \{0, 1\}'
+    plain_english: >-
+      Why it's true: gates preserve overlaps between states, and a cloner would turn the overlap
+      ⟨ψ|φ⟩ into its square. The only numbers equal to their own square are 0 and 1, so a cloner
+      could only copy states that are identical or perfectly distinguishable, never a general
+      unknown state.
+
+puzzle:
+  type: numeric
+  prompt: >-
+    The CNOT copier is fed |+⟩|0⟩ and both qubits are then measured. Two genuine copies of |+⟩
+    would give the result 01 a quarter of the time. What's the real probability of 01?
+  answer: 0
+  tolerance: 0
+  hints:
+    - Write out what CNOT does to (|0⟩ + |1⟩)|0⟩/√2, term by term.
+
+checks:
+  - question: Which of these is allowed?
+    options:
+      - "Perfectly copying an unknown qubit state"
+      - "Preparing many copies of a state you know the recipe for"
+      - "Copying a qubit, as long as you don't measure it"
+    answer: 1
+    explanation: >-
+      No-cloning is about unknown states. If you know how a state was made, you can make it again
+      as often as you like.
+    misconception_addressed: No-cloning means no two qubits can ever be in the same state.
+  - question: What comes out when the CNOT copier is fed |+⟩|0⟩?
+    options:
+      - "Two copies of |+⟩"
+      - "The entangled pair (|00⟩ + |11⟩)/√2"
+      - "An error"
+    answer: 1
+    explanation: CNOT acts on each branch separately, giving |00⟩ and |11⟩, and those branches together form an entangled pair.
+    misconception_addressed: A copier that works on 0 and 1 works on everything.
+
+diagnostic:
+  - question: Can a quantum computer make a perfect copy of an unknown qubit?
+    options: ["Yes", "No, quantum mechanics forbids it", "Only for pairs of qubits"]
+    answer: 1
+    explanation: The no-cloning theorem rules out copying unknown quantum states perfectly.
+
+alt_explanation: >-
+  A copier has to do the right thing for every input without knowing which one it got. For
+  |0⟩ it must output |00⟩, and for |1⟩ it must output |11⟩. Gates act on superpositions branch
+  by branch, so for (|0⟩ + |1⟩)/√2 it is forced to output (|00⟩ + |11⟩)/√2. But two copies would
+  be (|0⟩ + |1⟩)(|0⟩ + |1⟩)/2, which includes |01⟩ and |10⟩. The two don't match, so no copier
+  can exist.
+
+common_misconceptions:
+  - No-cloning means you can't prepare two identical qubits.
+  - A cleverer copier could get around it.

@@ -1,0 +1,8 @@
+id: quantum_advantage
+title: Quantum advantage
+summary: >-
+  Which problems quantum computers can solve much faster than classical ones, and which they can't.
+status: stub
+prerequisites: [interference, entanglement]
+estimated_minutes: 5
+course_topic: "Complexity: P, NP, BQP"

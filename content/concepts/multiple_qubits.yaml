@@ -1,0 +1,82 @@
+id: multiple_qubits
+title: Multiple qubits
+summary: >-
+  Several qubits are described together by one state with an amplitude for every combination
+  (|00⟩, |01⟩, …). Independent qubits combine with the tensor product.
+status: draft
+prerequisites: [quantum_gates]
+estimated_minutes: 4
+course_topic: "Multiple qubits: tensor products"
+
+hook: >-
+  Entanglement only exists between two or more qubits. Before we can see it, we need the rules
+  for describing several qubits at once, and they're different from how bits add up.
+
+intuition:
+  analogy: >-
+    Two unentangled qubits are like two separate coins: describe each one on its own, then
+    combine the descriptions. That combining step is called the tensor product.
+  where_it_breaks: >-
+    Describing qubits one at a time stops working once they're entangled. Then only the pair has
+    a state, which is the next lessons' big idea. And the description grows fast: n qubits need
+    2^n amplitudes, one for every combination, while n coins need only n values.
+
+interactive:
+  type: circuit_sandbox
+  props: { num_qubits: 2, allowed_gates: [X, H], show_bloch: false }
+  caption: Two wires, q0 on top and q1 below. Labels like |01⟩ read q0 first, so |01⟩ means q0 = 0 and q1 = 1.
+
+math:
+  - level: 1
+    latex: '|0\rangle \otimes |1\rangle = |01\rangle'
+    plain_english: >-
+      Qubit q0 in |0⟩ and qubit q1 in |1⟩ together make |01⟩. The leftmost digit is q0.
+  - level: 2
+    latex: '(a|0\rangle + b|1\rangle) \otimes (c|0\rangle + d|1\rangle) = ac|00\rangle + ad|01\rangle + bc|10\rangle + bd|11\rangle'
+    plain_english: Multiply out the brackets, just like in algebra, keeping q0's digit first.
+  - level: 3
+    latex: 'n \text{ qubits} \;\Rightarrow\; 2^n \text{ amplitudes}'
+    plain_english: >-
+      Describing 50 qubits in general takes about a million billion numbers. This is one reason
+      quantum systems are hard to simulate on ordinary computers.
+
+puzzle:
+  type: circuit_goal
+  prompt: Make all four outcomes (00, 01, 10, 11) equally likely.
+  num_qubits: 2
+  allowed_gates: [H, X]
+  target_probabilities: { "00": 0.25, "01": 0.25, "10": 0.25, "11": 0.25 }
+  hints:
+    - Each qubit needs its own 50/50.
+    - An H on each wire does it.
+
+checks:
+  - question: In the state |01⟩, which qubit reads 1?
+    options: ["q0 (the left digit)", "q1 (the right digit)", "Both"]
+    answer: 1
+    explanation: Digits are written in qubit order, q0 first, so |01⟩ has q0 = 0 and q1 = 1.
+    misconception_addressed: Mixing up which digit belongs to which qubit.
+  - question: In general, how many amplitudes does it take to describe 3 qubits?
+    options: ["3", "6", "8"]
+    answer: 2
+    explanation: One amplitude per combination, and 3 qubits have 2³ = 8 combinations.
+    misconception_addressed: n qubits need n (or 2n) numbers, like bits.
+
+diagnostic:
+  - question: "What is (1/√2)(|0⟩ + |1⟩) ⊗ |0⟩ when written out?"
+    options:
+      - "(1/√2)(|00⟩ + |10⟩)"
+      - "(1/√2)(|00⟩ + |01⟩)"
+      - "|00⟩ + |10⟩"
+    answer: 0
+    explanation: The first qubit (q0) carries the superposition, so only the first digit varies. The 1/√2 stays.
+
+alt_explanation: >-
+  List every combination the qubits could read: for two qubits that's 00, 01, 10, 11. The
+  state gives each combination an amplitude, and the squared amplitudes are the odds of reading
+  that combination. When the qubits are independent, each combination's amplitude is just the
+  product of the two single-qubit amplitudes.
+
+common_misconceptions:
+  - Two qubits are always described as two separate states.
+  - The rightmost digit is qubit 0 (some software, like Qiskit, does use that order; Qurious and most textbooks don't).

@@ -1,0 +1,14 @@
+id: why_fast
+question: Why are quantum computers supposed to be so fast?
+status: draft
+enabled: false
+order: 3
+preview: >-
+  They aren't faster at everything. For certain problems, a quantum computer can use
+  interference to make wrong answers cancel out and right answers reinforce, which can take far
+  fewer steps. It is not "trying every answer at once."
+targets: [quantum_advantage, grover]
+reward:
+  type: coming_soon
+  title: Find the marked item
+  description: Run Grover's search on four items and watch the right answer's probability grow.

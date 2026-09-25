@@ -1,0 +1,81 @@
+id: probability_basics
+title: Probability basics
+summary: >-
+  A probability says how often an outcome happens over many tries; for independent events,
+  probabilities multiply.
+status: draft
+prerequisites: []
+estimated_minutes: 3
+course_topic: "Measurement (Born rule) prerequisites"
+
+hook: >-
+  Quantum mechanics predicts odds, not certainties. To judge any claim about quantum
+  weirdness, you need to be comfortable with what "a 50% chance" does and doesn't tell you.
+
+intuition:
+  analogy: >-
+    Think of a weighted coin that lands heads with probability p. You can't predict any single
+    flip, but over many flips the fraction of heads settles close to p.
+  where_it_breaks: >-
+    A coin's randomness comes from details nobody tracks, like how hard it was flipped. In
+    principle, they could be measured and the flip predicted. Experiments on quantum systems
+    (Bell tests) rule out a large class of such hidden, local explanations for quantum
+    randomness. So the coin is a good model for the *math* of probability, but not for *where*
+    quantum randomness comes from.
+
+interactive:
+  type: coin_sampler
+  props: { initial_p: 0.5 }
+  caption: Set the coin's bias, then flip it 10, 100 or 1000 times. Few flips wander; many flips settle near the true odds.
+
+math:
+  - level: 1
+    latex: 'P(\text{heads}) + P(\text{tails}) = 1'
+    plain_english: Something always happens, so the probabilities of all the outcomes add up to 1.
+  - level: 2
+    latex: 'P(A \text{ and } B) = P(A)\,P(B) \quad \text{(independent events)}'
+    plain_english: >-
+      When two events don't influence each other, the chance of both is the product of their
+      chances. Entangled qubits will break this rule, and that's what makes them interesting.
+
+puzzle:
+  type: numeric
+  prompt: A coin lands heads with probability 0.3. You flip it twice. What's the probability that both flips are heads?
+  answer: 0.09
+  tolerance: 0.001
+  hints:
+    - The two flips are independent.
+    - Multiply the two probabilities.
+
+checks:
+  - question: A fair coin has landed heads 5 times in a row. What's the chance the next flip is heads?
+    options: ["Less than 50%", "50%", "More than 50%"]
+    answer: 1
+    explanation: The coin has no memory. Each flip is independent, so the chance is still 50%.
+    misconception_addressed: The gambler's fallacy (past random results change future odds).
+  - question: An outcome has probability 0.25. What does that mean?
+    options:
+      - "It happens exactly once in every 4 tries"
+      - "Over many tries, it happens about a quarter of the time"
+      - "It won't happen on the next try"
+    answer: 1
+    explanation: >-
+      Probability describes the long-run fraction. Any short run can differ; you might see it
+      twice in 4 tries, or not at all.
+    misconception_addressed: A probability guarantees exact frequencies in small samples.
+
+diagnostic:
+  - question: Two independent events each have probability 0.5. What's the probability that both happen?
+    options: ["1", "0.5", "0.25"]
+    answer: 2
+    explanation: For independent events, multiply the probabilities; 0.5 × 0.5 = 0.25.
+
+alt_explanation: >-
+  Imagine repeating the same experiment thousands of times and keeping a tally. The probability
+  of an outcome is simply the fraction of the tally it ends up with. "Independent" means knowing
+  one result tells you nothing about the other, and in that case the fraction of runs where both
+  happen is the product of their separate fractions.
+
+common_misconceptions:
+  - Random results "even out" in the short term.
+  - A 50% chance means the result alternates.
