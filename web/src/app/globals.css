@@ -1,26 +1,121 @@
 @import "tailwindcss";
 
+/* Dark mode follows a data-theme attribute on <html>, set before first paint by the inline
+   script in layout.tsx (Light / Dark / System). See docs/design-system.md for the palette. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #faf9f7;
+  --surface: #ffffff;
+  --surface-muted: #f3f1ee;
+  --border: #e4e0da;
+  --ink: #1c1917;
+  --ink-muted: #57534e;
+  --accent: #4338ca;
+  --accent-solid: #4f46e5;
+  --accent-solid-hover: #4338ca;
+  --accent-soft: #eef0ff;
+  --zero: #0e7490;
+  --zero-soft: #e0f4f8;
+  --one: #b45309;
+  --one-soft: #fdf0e1;
+  --success: #15803d;
+  --success-soft: #e8f6ec;
+  --danger: #be123c;
+  --danger-soft: #fdecef;
+  --caution-soft: #fff4e5;
+  --caution-ink: #8a3b0b;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.05), 0 4px 16px rgb(0 0 0 / 0.04);
+}
+
+[data-theme="dark"] {
+  --bg: #1a1816;
+  --surface: #23201d;
+  --surface-muted: #2c2926;
+  --border: #3b3733;
+  --ink: #f5f3f0;
+  --ink-muted: #b8b2aa;
+  --accent: #a5b4fc;
+  --accent-solid: #4f46e5;
+  --accent-solid-hover: #6366f1;
+  --accent-soft: #2a2a4a;
+  --zero: #22d3ee;
+  --zero-soft: #11353b;
+  --one: #fbbf24;
+  --one-soft: #3a2c10;
+  --success: #4ade80;
+  --success-soft: #16301f;
+  --danger: #fb7185;
+  --danger-soft: #3b1a22;
+  --caution-soft: #3a2a17;
+  --caution-ink: #fcd9a8;
+  --shadow-card: none;
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-border: var(--border);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-accent: var(--accent);
+  --color-accent-solid: var(--accent-solid);
+  --color-accent-solid-hover: var(--accent-solid-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-zero: var(--zero);
+  --color-zero-soft: var(--zero-soft);
+  --color-one: var(--one);
+  --color-one-soft: var(--one-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-caution-soft: var(--caution-soft);
+  --color-caution-ink: var(--caution-ink);
+  --shadow-card: var(--shadow-card);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+/* Visible, consistent focus ring on everything interactive. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* KaTeX inherits the text color so equations work in both themes. */
+.katex {
+  font-size: 1.08em;
+  color: inherit;
+}
+
+/* Diagonal hatch used for |1⟩-type bars, so they differ from |0⟩ bars without relying on color. */
+.hatch-one {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--one) 0 6px,
+    color-mix(in srgb, var(--one) 70%, transparent) 6px 9px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

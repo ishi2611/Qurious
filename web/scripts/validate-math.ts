@@ -13,13 +13,18 @@ const conceptsDir = path.resolve(__dirname, "../../content/concepts");
 let blocks = 0;
 const failures: string[] = [];
 
-for (const file of readdirSync(conceptsDir).filter((f) => f.endsWith(".yaml"))) {
+for (const file of readdirSync(conceptsDir).filter((f) =>
+  f.endsWith(".yaml"),
+)) {
   const concept = parse(readFileSync(path.join(conceptsDir, file), "utf8"));
   for (const [i, block] of (concept.math ?? []).entries()) {
     blocks++;
     try {
       // strict: "error" also rejects LaTeX that KaTeX would only warn about.
-      katex.renderToString(block.latex, { throwOnError: true, strict: "error" });
+      katex.renderToString(block.latex, {
+        throwOnError: true,
+        strict: "error",
+      });
     } catch (e) {
       failures.push(`${file} math[${i}]: ${(e as Error).message}`);
     }
@@ -27,7 +32,9 @@ for (const file of readdirSync(conceptsDir).filter((f) => f.endsWith(".yaml"))) 
 }
 
 if (failures.length) {
-  console.error(`✗ ${failures.length} of ${blocks} math blocks failed to render:`);
+  console.error(
+    `✗ ${failures.length} of ${blocks} math blocks failed to render:`,
+  );
   for (const f of failures) console.error(`  ${f}`);
   process.exit(1);
 }

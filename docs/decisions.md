@@ -48,3 +48,24 @@ The validator runs a breadth-first search over each circuit puzzle's allowed gat
 
 ### 2026-09-24 · Math is validated with KaTeX itself
 Math rendering is checked by rendering every block with KaTeX in strict mode (`npm run content:math`), the same library the lesson player uses, rather than approximating it in Python. `scripts/validate-content.sh` runs both halves of the validator.
+
+### 2026-09-24 · Design system: warm neutrals, one indigo accent, cyan/amber for |0⟩/|1⟩, light by default
+The full proposal is in `docs/design-system.md`, and a live version is at `/design` (pending the owner's approval). Every text color pair was checked with the WCAG contrast formula (lowest 4.77:1). |1⟩ bars are hatched as well as amber, so 0/1 never relies on color alone. The theme is applied by an inline `<head>` script before first paint (the pattern from the bundled Next.js guide), defaulting to **light**, with Dark and System one click away.
+
+### 2026-09-24 · Library versions: `motion`, `@xyflow/react`, `@dnd-kit/core`
+Framer Motion is now published as `motion` (import from `motion/react`); React Flow as `@xyflow/react` (v12). For drag-and-drop we use the stable `@dnd-kit/core` 6.x, not the pre-1.0 `@dnd-kit/react`. The circuit builder also supports tap-a-gate-then-tap-a-wire, which works with keyboard and touch without dragging.
+
+### 2026-09-24 · Bloch-sphere labels are projected DOM spans, not drei `<Html>`
+drei's `<Html>` re-creates its React root when the canvas container mounts, but doesn't re-render into the new root, so the first label (|0⟩) came out empty. The labels are now plain spans positioned every frame by projecting their 3D points through the camera: simpler, and they can't go missing.
+
+### 2026-09-24 · The web app reads content YAML directly; paths come from the API
+Lesson pages are statically generated from `content/` at build time (fast, and they work even if the API is asleep). The ordered path always comes from the Python path engine (`POST /path`, by target concepts), as the brief specifies. The preview screen says "waking up the server" after 3 seconds, because free hosting sleeps.
+
+### 2026-09-24 · Adaptive quick check
+The diagnostic asks about the path's concepts closest to the goal first, never asks about anything under a concept the learner just passed, and stops after 6 questions. The known concepts are then sent to the path engine, which prunes what only they needed. Learners can skip the check entirely ("I'm new to this").
+
+### 2026-09-24 · Entanglement physics lives in tested modules
+`lib/bell.ts` and `lib/teleport.ts` hold the Bell-lab and teleportation logic outside the UI, so it is unit-tested: no-signaling holds exactly (Bob's P(1) = 1/2 for every Bell state and every choice Alice makes), and Bob recovers the state for all four measurement outcomes across several input states.
+
+### 2026-09-24 · End-to-end tests run on separate ports
+Playwright runs a production build on 3100 (web) and 8100 (API), so tests never interfere with a developer's `npm run dev` / `uvicorn` on 3000 / 8000. The two journey tests answer every check from the YAML answer key and must reach the reward with no page errors, on both a desktop and a phone viewport.
