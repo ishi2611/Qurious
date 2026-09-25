@@ -14,9 +14,10 @@ from __future__ import annotations
 import logging
 import threading
 from dataclasses import dataclass, field
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 
-from qiskit import QuantumCircuit
+if TYPE_CHECKING:  # Qiskit is imported only when a hardware run is requested (saves memory)
+    from qiskit import QuantumCircuit
 
 log = logging.getLogger("qurious.hardware")
 
@@ -43,6 +44,8 @@ class CircuitError(ValueError):
 
 def build_circuit(num_qubits: int, ops: list[dict]) -> QuantumCircuit:
     """Qurious operations → a measured Qiskit circuit, with the same checks as the simulator."""
+    from qiskit import QuantumCircuit
+
     if not 1 <= num_qubits <= MAX_QUBITS:
         raise CircuitError(f"Use between 1 and {MAX_QUBITS} qubits")
     if not ops:

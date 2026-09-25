@@ -1,17 +1,25 @@
 """Retrieval over lesson content: the only knowledge the tutor may use.
 
 Every authored lesson is split into small, labelled chunks (hook, analogy, "where it breaks",
-each math line's plain-English reading, check explanations, …). Chunks are embedded with a
-local sentence-transformers model and searched with ChromaDB, with no paid embedding API.
+each math line's plain-English reading, check explanations, …). Chunks are embedded locally
+with the sentence-transformers/all-MiniLM-L6-v2 model, run through ONNX by fastembed (the same
+embeddings as PyTorch, in a fraction of the memory), and searched with ChromaDB. No paid
+embedding API is used.
+
+Chunk embeddings are cached on disk, keyed by a hash of the model and the chunk texts, so a
+server starts (and wakes from sleep) without re-embedding every lesson.
 """
 
 from __future__ import annotations
 
+import hashlib
+import json
 import logging
 import uuid
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from functools import lru_cache
+from pathlib import Path
 
 import chromadb
 
@@ -21,6 +29,7 @@ from app.content.schema import Concept
 log = logging.getLogger("qurious.retrieval")
 
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+DEFAULT_CACHE = Path(__file__).resolve().parents[2] / ".cache" / "lesson-embeddings.json"
 
 Embedder = Callable[[Sequence[str]], list[list[float]]]
 
@@ -87,8 +96,36 @@ def build_chunks(content: Content) -> list[Chunk]:
     return chunks
 
 
+def _cache_key(chunks: Sequence[Chunk]) -> str:
+    payload = json.dumps([EMBEDDING_MODEL, [[c.id, c.title, c.text] for c in chunks]])
+    return hashlib.sha256(payload.encode()).hexdigest()
+
+
+def cached_embeddings(
+    chunks: Sequence[Chunk], embed: Embedder, cache: Path | None
+) -> list[list[float]]:
+    """Embeddings for the chunks, from the cache file when it matches the current content."""
+    texts = [f"{c.title}. {c.text}" for c in chunks]
+    if cache is None:
+        return embed(texts)
+    key = _cache_key(chunks)
+    try:
+        data = json.loads(cache.read_text())
+        if data.get("key") == key:
+            return data["vectors"]
+    except (OSError, ValueError):
+        pass
+    vectors = embed(texts)
+    try:
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        cache.write_text(json.dumps({"key": key, "vectors": vectors}))
+    except OSError:
+        log.warning("Couldn't write the embedding cache at %s", cache)
+    return vectors
+
+
 class Retriever:
-    def __init__(self, chunks: Sequence[Chunk], embed: Embedder):
+    def __init__(self, chunks: Sequence[Chunk], embed: Embedder, cache: Path | None = None):
         self.embed = embed
         self.chunks = {c.id: c for c in chunks}
         client = chromadb.EphemeralClient()
@@ -102,7 +139,7 @@ class Retriever:
         if chunks:
             self.collection.add(
                 ids=[c.id for c in chunks],
-                embeddings=self.embed([f"{c.title}. {c.text}" for c in chunks]),
+                embeddings=cached_embeddings(chunks, embed, cache),
                 metadatas=[{"concept_id": c.concept_id, "authored": c.authored} for c in chunks],
             )
 
@@ -138,14 +175,31 @@ class Retriever:
 
 
 @lru_cache
-def sentence_transformer_embedder() -> Embedder:
-    """The real embedder. Loaded lazily: the model (~90 MB) downloads on first use."""
-    from sentence_transformers import SentenceTransformer
+def default_embedder() -> Embedder:
+    """The real embedder, loaded lazily: the ONNX model (~90 MB) downloads on first use unless
+    it was baked into the image (see the Dockerfile)."""
+    from fastembed import TextEmbedding
 
     log.info("Loading embedding model %s", EMBEDDING_MODEL)
-    model = SentenceTransformer(EMBEDDING_MODEL)
+    # One thread keeps memory low on small (512 MB) servers; queries are short anyway.
+    model = TextEmbedding(EMBEDDING_MODEL, threads=1)
 
     def embed(texts: Sequence[str]) -> list[list[float]]:
-        return model.encode(list(texts), normalize_embeddings=True).tolist()
+        vectors = []
+        for v in model.embed(list(texts), batch_size=8):
+            norm = float((v * v).sum()) ** 0.5 or 1.0
+            vectors.append((v / norm).tolist())
+        return vectors
 
     return embed
+
+
+def build_index() -> None:
+    """Pre-compute the lesson embedding cache. Run at image build time:
+    python -c "from app.tutor.retrieval import build_index; build_index()"
+    """
+    from app.content.loader import load_content
+
+    chunks = build_chunks(load_content())
+    cached_embeddings(chunks, default_embedder(), DEFAULT_CACHE)
+    print(f"Cached embeddings for {len(chunks)} lesson chunks at {DEFAULT_CACHE}")

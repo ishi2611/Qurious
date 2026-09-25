@@ -1,6 +1,6 @@
 """Tutor behaviour with the real local embedding model (no LLM).
 
-Marked `slow`: the first run downloads sentence-transformers/all-MiniLM-L6-v2 (~90 MB).
+Marked `slow`: the first run downloads the all-MiniLM-L6-v2 ONNX model (~90 MB).
 Run with: pytest -m slow
 """
 
@@ -9,7 +9,7 @@ import pytest
 from app.content.loader import load_content
 from app.content.paths import build_graph
 from app.llm.client import LLMClient
-from app.tutor.retrieval import Retriever, build_chunks, sentence_transformer_embedder
+from app.tutor.retrieval import Retriever, build_chunks, default_embedder
 from app.tutor.service import Tutor
 
 pytestmark = pytest.mark.slow
@@ -41,7 +41,7 @@ NOT_WRITTEN_YET = [
 @pytest.fixture(scope="module")
 def tutor():
     content = load_content()
-    retriever = Retriever(build_chunks(content), sentence_transformer_embedder())
+    retriever = Retriever(build_chunks(content), default_embedder())
     return Tutor(content, build_graph(content.concepts), retriever, LLMClient([]))
 
 

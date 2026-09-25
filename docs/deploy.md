@@ -1,36 +1,26 @@
 # Deploying Qurious
 
-Two pieces: the **web app** on Vercel, and the **API** on Hugging Face Spaces (recommended) or Render. Optional services: Groq and Gemini (tutor LLM), Supabase (accounts and study data), IBM Quantum (real hardware).
+Two pieces: the **web app** on Vercel, and the **API** on Render (free) or Hugging Face Spaces. Optional services: Groq and Gemini (tutor LLM), Supabase (accounts and study data), IBM Quantum (real hardware).
 
-## 1. API on Hugging Face Spaces (recommended)
+## 1. API on Render (free)
 
-The tutor's embedding model needs torch, which uses more memory than Render's free 512 MB instance allows. The free Hugging Face "CPU basic" hardware has 16 GB.
+The API uses about 330 MB, which fits Render's free 512 MB instance. The embedding model runs through ONNX (fastembed) instead of torch, and Qiskit is imported only for real-hardware runs. Free instances sleep after 15 minutes idle, so the first request after that takes about a minute; the web app shows "Waking up the server…" meanwhile.
 
-1. Create a new Space at <https://huggingface.co/new-space> with **SDK: Docker** and the **blank** template.
-2. Push this repository to the Space (it builds from the root `Dockerfile`). The Space's `README.md` must start with this front matter:
-   ```yaml
-   ---
-   title: Qurious API
-   sdk: docker
-   app_port: 7860
-   ---
-   ```
-   The simplest approach is a separate branch for the Space whose README starts with those lines.
-3. In the Space's **Settings → Variables and secrets**, add:
+1. At <https://dashboard.render.com> choose **New → Blueprint** and connect this GitHub repository. Render reads `render.yaml` and builds the root `Dockerfile`.
+2. Fill in the variables it asks for:
 
    | Name | Value |
    | --- | --- |
    | `CORS_ORIGINS` | `["https://<your-vercel-domain>"]` |
    | `GROQ_API_KEY`, `GEMINI_API_KEY` | optional; the tutor works without them |
-   | `LLM_PRIMARY_MODEL`, `LLM_FALLBACK_MODEL` | `openai/gpt-oss-120b`, `gemini-3.5-flash-lite` (check each provider's docs first) |
    | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | optional; use the new **secret** key (`sb_secret_…`) |
-   | `STUDY_ENABLED` | `false` until the study is approved |
    | `STUDY_ADMIN_TOKEN` | a long random string, for CSV export |
    | `IBM_QUANTUM_TOKEN` | optional |
 
-4. Check it with `https://<space>.hf.space/health`, which should return `{"status":"ok",…}`.
+   `LLM_PRIMARY_MODEL`, `LLM_FALLBACK_MODEL` and `STUDY_ENABLED` come preset from `render.yaml`.
+3. Check it with `https://<service>.onrender.com/health`, which should return `{"status":"ok",…}`.
 
-**Alternative, Render:** `render.yaml` is a ready-made Blueprint that uses the same Dockerfile. Choose at least the Starter plan.
+**Alternative, Hugging Face Spaces:** the same `Dockerfile` runs as a Docker Space (creating one may need a paid account). The Space's `README.md` must start with front matter containing `sdk: docker` and `app_port: 7860`; set the same variables under **Settings → Variables and secrets**.
 
 > Without Supabase, study data is written to SQLite inside the container, and **container disks aren't permanent**. For a real study, configure Supabase.
 
@@ -49,7 +39,7 @@ The tutor's embedding model needs torch, which uses more memory than Render's fr
 
    | Name | Value |
    | --- | --- |
-   | `NEXT_PUBLIC_API_URL` | the API URL, e.g. `https://<space>.hf.space` |
+   | `NEXT_PUBLIC_API_URL` | the API URL, e.g. `https://<service>.onrender.com` |
    | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | optional; the **publishable** key |
    | `NEXT_PUBLIC_STUDY_MODE` | `false` until the study is approved |
    | `NEXT_PUBLIC_STUDY_CONTACT` | shown on the consent form |

@@ -81,4 +81,4 @@ The same checks run in GitHub Actions (`.github/workflows/ci.yml`) on every push
 - [`docs/concept_map.md`](docs/concept_map.md): the 31 concepts, their prerequisites, and question targets.
 - [`docs/content-guide.md`](docs/content-guide.md): how to write and review lessons.
 - [`docs/study-guide.md`](docs/study-guide.md): running the learning study and exporting data.
-- [`docs/deploy.md`](docs/deploy.md): deploying the web app (Vercel) and the API (Hugging Face Spaces or Render).
+- [`docs/deploy.md`](docs/deploy.md): deploying the web app (Vercel) and the API (Render free tier, or Hugging Face Spaces).

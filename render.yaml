@@ -1,12 +1,12 @@
 # Render Blueprint for the API (alternative to Hugging Face Spaces).
-# Note: the tutor's embedding model (torch + MiniLM) needs more memory than Render's free
-# 512 MB instance; use at least the Starter plan, or host the API on Hugging Face Spaces.
+# Fits Render's free 512 MB instance (ONNX embeddings, Qiskit loaded only for hardware runs).
+# Free instances sleep after 15 minutes idle; the first request then takes about a minute.
 services:
   - type: web
     name: qurious-api
     runtime: docker
     dockerfilePath: ./Dockerfile
-    plan: starter
+    plan: free
     healthCheckPath: /health
     envVars:
       - key: CORS_ORIGINS

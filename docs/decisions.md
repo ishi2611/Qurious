@@ -123,3 +123,6 @@ The tutor's local embedding model needs torch, which exceeds Render's free 512 M
 
 ### 2026-09-24 · Next.js 16 error boundaries use `retry`
 The bundled docs show `error.tsx` receiving `retry()` (re-fetches and re-renders) instead of the older `reset()`. We use `retry`.
+
+### 2026-09-25 · API on Render's free tier: ONNX embeddings instead of torch
+Creating a Hugging Face Space returned 402 (payment required), so the API moved to Render's free 512 MB instance. With torch, the tutor used about 650 MB. It now runs the same all-MiniLM-L6-v2 model through ONNX with `fastembed` (one thread, batches of 8); cosine agreement with the sentence-transformers output is ≥ 0.99999 on lesson chunks. Qiskit is imported only when a hardware run is requested, and `qiskit-aer` moved to dev dependencies, since only the simulator cross-check uses it. Lesson embeddings are computed at image build time and cached, keyed by a hash of the model and chunk texts. Measured on a running server: 321 MB idle after warm-up, 324 MB after tutor questions, with torch and Qiskit never loaded.

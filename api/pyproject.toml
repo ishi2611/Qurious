@@ -7,18 +7,18 @@ dependencies = [
     "fastapi>=0.115",
     "uvicorn[standard]>=0.30",
     "pydantic-settings>=2.4",
-    "qiskit>=2.0",        # validates our TypeScript simulator; optional real-hardware runs
-    "qiskit-aer>=0.17",
+    "qiskit>=2.0",        # optional real-hardware runs (imported only when used)
     "networkx>=3.3",      # concept map and path engine
     "pyyaml>=6.0",        # content files
     "requests>=2.32",     # LLM provider HTTP calls
-    "sentence-transformers>=5.0",  # local embeddings for retrieval (no paid API)
+    "fastembed>=0.8",     # local MiniLM embeddings via ONNX (no PyTorch, no paid API)
     "chromadb>=1.0",      # vector search over lesson content
     "qiskit-ibm-runtime>=0.50",  # optional real-hardware runs (needs IBM_QUANTUM_TOKEN)
 ]
 
 [project.optional-dependencies]
 dev = [
+    "qiskit-aer>=0.17",   # cross-checks our TypeScript simulator (scripts/, tests/)
     "pytest>=8",
     "httpx2>=2.13",  # used by FastAPI's TestClient (Starlette now prefers httpx2 over httpx)
     "ruff>=0.6",

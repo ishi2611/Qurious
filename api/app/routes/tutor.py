@@ -12,7 +12,7 @@ from app.llm import get_llm
 from app.ratelimit import RateLimiter, client_key
 from app.routes.content import get_content
 from app.storage import QuestionLogEntry, get_store
-from app.tutor.retrieval import Retriever, build_chunks, sentence_transformer_embedder
+from app.tutor.retrieval import DEFAULT_CACHE, Retriever, build_chunks, default_embedder
 from app.tutor.service import Tutor
 
 router = APIRouter(prefix="/tutor")
@@ -26,7 +26,7 @@ hook_limiter = RateLimiter(limit=240, window_seconds=60)
 @lru_cache
 def get_tutor() -> Tutor:
     content, graph = get_content()
-    retriever = Retriever(build_chunks(content), sentence_transformer_embedder())
+    retriever = Retriever(build_chunks(content), default_embedder(), cache=DEFAULT_CACHE)
     return Tutor(content, graph, retriever, get_llm())
 
 
