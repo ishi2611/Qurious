@@ -27,3 +27,9 @@ Starlette 1.x deprecates `httpx` in its test client in favor of `httpx2`, mainta
 
 ### 2026-09-24 · Backend settings via pydantic-settings, all optional in M0
 The API reads the repo-root `.env` with `pydantic-settings`. All keys default to empty, so the API starts without any accounts. Each later feature validates the keys it needs when it's used, instead of blocking startup.
+
+### 2026-09-24 · Simulator: big-endian qubit order, immutable states, Qiskit rotation convention
+The TypeScript simulator (`web/src/lib/quantum/`) orders qubits big-endian (q0 is the leftmost bit of |q0 q1 …⟩) because that's how the course material and most textbooks write states. Learners will read kets on screen, so they must match. Qiskit is little-endian, and the cross-check script reverses bits before comparing. Rotations use R_P(θ) = exp(−iθP/2), the same as Qiskit, so amplitudes (not just probabilities) can be compared. Every controlled gate (CNOT, CZ, Toffoli) goes through one "apply a 2×2 matrix only where all controls are 1" routine, so there's one well-tested path instead of one per gate. Operations return new arrays rather than mutating, which keeps React state updates simple.
+
+### 2026-09-24 · Cross-checking against Qiskit-Aer compares full amplitudes
+`scripts/sim-crosscheck.sh` runs random circuits (every gate, 1–5 qubits) through both simulators and compares amplitudes, which also checks phases, not only probabilities. The Aer run uses `transpile(..., optimization_level=0)`: at higher levels Qiskit may remove SWAP gates and record them as a qubit relabeling, which permutes the saved statevector. That made 22 of the first 50 circuits look wrong even though the simulator was correct. `api/tests/test_crosscheck.py` guards against this regression.
