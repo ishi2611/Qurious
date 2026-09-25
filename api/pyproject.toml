@@ -11,6 +11,9 @@ dependencies = [
     "qiskit-aer>=0.17",
     "networkx>=3.3",      # concept map and path engine
     "pyyaml>=6.0",        # content files
+    "requests>=2.32",     # LLM provider HTTP calls
+    "sentence-transformers>=5.0",  # local embeddings for retrieval (no paid API)
+    "chromadb>=1.0",      # vector search over lesson content
 ]
 
 [project.optional-dependencies]
@@ -37,3 +40,5 @@ select = ["E", "F", "I", "B", "UP", "SIM"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = ["slow: uses the real embedding model (downloads ~90 MB on first run)"]
+addopts = "-m 'not slow'"

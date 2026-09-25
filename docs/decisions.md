@@ -69,3 +69,18 @@ The diagnostic asks about the path's concepts closest to the goal first, never a
 
 ### 2026-09-24 · End-to-end tests run on separate ports
 Playwright runs a production build on 3100 (web) and 8100 (API), so tests never interfere with a developer's `npm run dev` / `uvicorn` on 3000 / 8000. The two journey tests answer every check from the YAML answer key and must reach the reward with no page errors, on both a desktop and a phone viewport.
+
+### 2026-09-24 · LLM wrapper: plain HTTPS, Groq then Gemini, backoff and a request cache
+Both providers are called over HTTPS with `requests` rather than vendor SDKs: fewer dependencies, and easy to fake in tests. Endpoints were checked against the docs on 2026-09-24: Groq's OpenAI-compatible `chat/completions` (JSON mode via `response_format`, and `include_reasoning: false` for gpt-oss models); Gemini's `models.generateContent` (documented and not deprecated; the newer Interactions API wasn't needed). On a 429 the client backs off exponentially (1 s, 2 s, …), never less than the provider's `retry-after` and capped at 8 s; after 3 tries, or on a non-retryable error, it falls back to the next provider. Identical requests are served from an in-memory LRU cache (24 h). Model names come only from `LLM_PRIMARY_MODEL` and `LLM_FALLBACK_MODEL`, and the suggested values in `.env.example` were current on that date.
+
+### 2026-09-24 · The tutor is grounded by construction, and works without an LLM
+Retrieval uses the local `sentence-transformers/all-MiniLM-L6-v2` model and an in-memory ChromaDB collection (cosine) over labelled lesson chunks. A follow-up is only sent to the LLM if a chunk from the current step or its prerequisites matches well (≥ 0.35 cosine; measured: on-topic ≥ 0.42, unrelated ≤ 0.18). The LLM sees only those excerpts, must answer in JSON, and must cite at least one excerpt id it was given; otherwise the answer is discarded. Without an LLM, the tutor quotes the best-matching lesson passage (needing ≥ 0.45 and preferring explanations over misconception lines).
+
+### 2026-09-24 · Unwritten concepts are indexed so "not covered yet" is honest
+Measurement showed that quantum questions the lessons don't cover (e.g. "How does Grover search work?", 0.49) score as high as real follow-ups, so a similarity threshold alone would quote an unrelated passage. Stub concepts are therefore indexed too (title + summary, marked `authored: false`). If a question matches an unwritten concept at least as well as anything in the lesson, the tutor says it's about that topic and that Qurious doesn't have a lesson on it yet. `tests/test_tutor_quality.py` (marked `slow`, real model) guards this behaviour.
+
+### 2026-09-24 · Personalized hooks: authored first, LLM second, never an answer
+A hand-written `question_hooks` entry always wins, since it's reviewed content. Otherwise the LLM may rephrase the authored hook (1–2 sentences, at most 60 words) to connect it to the learner's question, under an explicit instruction not to answer that question. Any failure keeps the authored hook.
+
+### 2026-09-24 · v2 free-text router: ids validated, messages written in code, every question logged
+Behind `FEATURE_FREE_TEXT` (API) and `NEXT_PUBLIC_FEATURE_FREE_TEXT` (web). The LLM may only return ids from the concept list; unknown ids are dropped. Concepts whose paths include unwritten lessons are reported as "not covered yet" instead of starting a dead-end path. The messages learners see are templated in code, not generated, so they're always honest. Every raw question and its mapping is stored in `question_log`. Tutor endpoints are rate-limited (20 per minute per visitor) to protect the free LLM quotas.

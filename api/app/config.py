@@ -26,5 +26,11 @@ class Settings(BaseSettings):
     # Browser origins allowed to call the API (the Next.js dev server by default).
     cors_origins: list[str] = ["http://localhost:3000"]
 
+    # v2: free-text questions routed onto concepts (brief §3, behind a feature flag).
+    feature_free_text: bool = False
+
+    # Load the tutor's embedding model at startup instead of on the first question.
+    warm_up_tutor: bool = True
+
 
 settings = Settings()

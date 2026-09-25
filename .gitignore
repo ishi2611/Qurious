@@ -27,6 +27,7 @@ __pycache__/
 
 # Local data (vector store, caches)
 api/.chroma/
+api/.data/
 api/.cache/
 
 # OS / editors
