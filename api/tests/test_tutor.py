@@ -230,6 +230,7 @@ def api(monkeypatch, tmp_path):
     monkeypatch.setattr(tutor_routes, "get_tutor", lambda: tutor())
     monkeypatch.setattr(tutor_routes, "get_store", lambda: store)
     tutor_routes.limiter._hits.clear()
+    tutor_routes.hook_limiter._hits.clear()
     return TestClient(app), store
 
 
@@ -248,9 +249,12 @@ def test_ask_endpoint(api):
 
 def test_tutor_endpoints_are_rate_limited(api):
     client, _ = api
-    body = {"concept_id": "qubit", "question_id": "entanglement_ftl"}
-    codes = [client.post("/tutor/hook", json=body).status_code for _ in range(21)]
-    assert codes[:20] == [200] * 20 and codes[20] == 429
+    body = {"concept_id": "qubit", "message": "What is a qubit?"}
+    codes = [client.post("/tutor/ask", json=body).status_code for _ in range(31)]
+    assert codes[:30] == [200] * 30 and codes[30] == 429
+    # Hooks have their own, higher limit, so asking questions doesn't block lessons.
+    hook = {"concept_id": "qubit", "question_id": "entanglement_ftl"}
+    assert client.post("/tutor/hook", json=hook).status_code == 200
 
 
 def test_route_is_behind_a_flag_and_logs_every_question(api, monkeypatch):

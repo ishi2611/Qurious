@@ -1,0 +1,90 @@
+# Pre-test / post-test for the learning study. The same items are used before and after, with
+# no feedback shown during either test. Items are deliberately different from every lesson check
+# and quick-check question (the validator enforces this).
+#
+# DRAFT: study instruments must be reviewed by the content owner (and, if required, the ethics
+# board) before any data is collected.
+version: v1-draft
+status: draft
+items:
+  - id: superposition_meaning
+    concept_id: superposition
+    question: A qubit is in the state (|0⟩ + |1⟩)/√2. Which statement is correct?
+    options:
+      - "It is secretly 0 or 1, and measuring reveals which"
+      - "Measuring it gives 0 or 1, each with probability 1/2"
+      - "Measuring it gives the value 0.5"
+    answer: 1
+
+  - id: born_rule
+    concept_id: measurement
+    question: A qubit is in the state √0.3 |0⟩ + √0.7 |1⟩. What is the probability of measuring 1?
+    options: ["√0.7 (about 0.84)", "0.7", "0.49", "0.3"]
+    answer: 1
+
+  - id: repeat_measurement
+    concept_id: measurement
+    question: >-
+      Two researchers take turns measuring the same qubit, with nothing done to it in between.
+      The first one gets 0. What does the second one get?
+    options:
+      - "0, with certainty"
+      - "0 or 1, with equal chance"
+      - "1, with certainty"
+    answer: 0
+
+  - id: hadamard_twice
+    concept_id: quantum_gates
+    question: A qubit starts in |1⟩. You apply the H gate twice in a row, then measure. What do you get?
+    options:
+      - "0 every time"
+      - "0 or 1, with equal chance"
+      - "1 every time"
+    answer: 2
+
+  - id: entangled_outcome
+    concept_id: entanglement
+    question: Two qubits are in the state (|00⟩ + |11⟩)/√2. You measure the first one and get 1. What will the second one give?
+    options:
+      - "1, with certainty"
+      - "0, with certainty"
+      - "0 or 1, with equal chance"
+    answer: 0
+
+  - id: signaling
+    concept_id: no_signaling
+    question: >-
+      Alice and Bob share many entangled pairs and are far apart. Can Alice, just by choosing how
+      she measures her qubits, send Bob a message he can read without any other communication?
+    options:
+      - "Yes, instantly, because her measurement changes Bob's qubits"
+      - "No, because Bob's own results look random whatever Alice does"
+      - "Only if they are less than a kilometre apart"
+    answer: 1
+
+  - id: cloning
+    concept_id: no_cloning
+    question: Which of these is possible?
+    options:
+      - "Copying an unknown qubit state onto a blank qubit"
+      - "Making many qubits in the state |+⟩, when you know how it's prepared"
+      - "Reading out both amplitudes of an unknown qubit with one measurement"
+    answer: 1
+
+  - id: teleportation_channel
+    concept_id: teleportation
+    question: In quantum teleportation, what must be sent from Alice to Bob after they share an entangled pair?
+    options:
+      - "Nothing: the state appears at Bob's side instantly"
+      - "Two ordinary (classical) bits"
+      - "Alice's original particle"
+    answer: 1
+
+  - id: teleportation_original
+    concept_id: teleportation
+    question: After a successful teleportation, where is the original quantum state?
+    options:
+      - "Only with Bob"
+      - "With both Alice and Bob"
+      - "Only with Alice"
+    answer: 0

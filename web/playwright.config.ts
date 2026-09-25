@@ -3,7 +3,8 @@ import { defineConfig, devices } from "@playwright/test";
 /**
  * End-to-end tests run against a production build on ports 3100 (web) and 8100 (API), so they
  * never collide with a local `npm run dev` / `uvicorn` on 3000 / 8000.
- * Build first with: NEXT_PUBLIC_API_URL=http://localhost:8100 npm run build
+ * Build first with:
+ *   NEXT_PUBLIC_API_URL=http://localhost:8100 NEXT_PUBLIC_STUDY_MODE=true npm run build
  * The API needs the "qurious" Python env on PATH.
  */
 export default defineConfig({
@@ -19,7 +20,7 @@ export default defineConfig({
   webServer: [
     {
       command:
-        "cd ../api && CORS_ORIGINS='[\"http://localhost:3100\"]' python -m uvicorn app.main:app --port 8100",
+        "cd ../api && CORS_ORIGINS='[\"http://localhost:3100\"]' STUDY_ENABLED=true STUDY_ADMIN_TOKEN=e2e-admin-token python -m uvicorn app.main:app --port 8100",
       url: "http://localhost:8100/health",
       reuseExistingServer: true,
       timeout: 60_000,

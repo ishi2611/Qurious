@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ThemeToggle from "./ThemeToggle";
+import AccountMenu from "./account/AccountMenu";
 
 export function Logo() {
   return (
@@ -62,6 +63,7 @@ export default function SiteHeader() {
           >
             Translator
           </Link>
+          <AccountMenu />
           <ThemeToggle />
         </div>
       </nav>

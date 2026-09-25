@@ -16,7 +16,11 @@ from app.tutor.retrieval import Retriever, build_chunks, sentence_transformer_em
 from app.tutor.service import Tutor
 
 router = APIRouter(prefix="/tutor")
-limiter = RateLimiter(limit=20, window_seconds=60)
+# Per visitor (IP). A classroom often shares one IP, so limits are per-minute and generous;
+# the LLM client's own backoff and fallback handle provider quotas. Hooks are hand-written or
+# cached almost every time, so they get a much higher limit than open questions.
+limiter = RateLimiter(limit=30, window_seconds=60)
+hook_limiter = RateLimiter(limit=240, window_seconds=60)
 
 
 @lru_cache
@@ -28,6 +32,10 @@ def get_tutor() -> Tutor:
 
 def rate_limited(request: Request) -> None:
     limiter.check(client_key(request))
+
+
+def hook_rate_limited(request: Request) -> None:
+    hook_limiter.check(client_key(request))
 
 
 class AskRequest(BaseModel):
@@ -68,7 +76,7 @@ class HookResponse(BaseModel):
     personalized: bool
 
 
-@router.post("/hook", response_model=HookResponse, dependencies=[Depends(rate_limited)])
+@router.post("/hook", response_model=HookResponse, dependencies=[Depends(hook_rate_limited)])
 def hook(req: HookRequest) -> HookResponse:
     tutor = get_tutor()
     if req.concept_id not in tutor.content.concepts:

@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 import SiteHeader from "@/components/SiteHeader";
+import StudyProvider from "@/components/study/StudyProvider";
 import { THEME_BOOTSTRAP } from "@/lib/theme";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <SiteHeader />
+        <StudyProvider />
         <div id="main" className="flex flex-1 flex-col">
           {children}
         </div>

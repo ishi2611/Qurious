@@ -17,6 +17,8 @@ export interface JourneyState {
   /** Concepts currently being visited as detours, innermost last. */
   detours: string[];
   startedAt: string;
+  /** Last save; used to merge progress across devices. */
+  updatedAt?: string;
 }
 
 export const newJourney = (questionId: string): JourneyState => ({
@@ -126,7 +128,12 @@ export function loadJourney(questionId: string): JourneyState | null {
 
 export function saveJourney(j: JourneyState) {
   try {
-    localStorage.setItem(key(j.questionId), JSON.stringify(j));
+    localStorage.setItem(
+      key(j.questionId),
+      JSON.stringify({ ...j, updatedAt: new Date().toISOString() }),
+    );
+    // Lets the optional account sync (components/account) pick up the change.
+    window.dispatchEvent(new Event("qurious:journey-saved"));
   } catch {
     // Storage unavailable: the journey still works for this visit.
   }

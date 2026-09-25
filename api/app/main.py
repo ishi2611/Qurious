@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app import __version__
 from app.config import settings
-from app.routes import content, tutor
+from app.routes import content, study, tutor
 
 log = logging.getLogger("qurious")
 
@@ -35,13 +35,14 @@ app = FastAPI(title="Qurious API", version=__version__, lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "DELETE"],
     allow_headers=["*"],
 )
 
 
 app.include_router(content.router)
 app.include_router(tutor.router)
+app.include_router(study.router)
 
 
 @app.get("/health")

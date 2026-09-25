@@ -87,3 +87,24 @@ Behind `FEATURE_FREE_TEXT` (API) and `NEXT_PUBLIC_FEATURE_FREE_TEXT` (web). The 
 
 ### 2026-09-24 · Translator: one fresh qubit per classical gate
 Each classical gate writes its result onto a fresh qubit that starts at 0, and all inputs are kept. This is the textbook (Bennett-style) construction: AND → Toffoli, XOR → two CNOTs, OR → XOR plus a Toffoli, NOT → CNOT then X. It uses more qubits than hand-optimized circuits (NOT could be a single in-place X), but one uniform rule is easier to learn and to verify. Circuits are capped at 5 qubits, the simulator's limit, with a readable message when a learner's circuit would exceed it. `lib/translator.test.ts` checks that every converted preset and a multi-gate custom circuit match their classical truth tables with the inputs unchanged, and that a superposition input gives every row with equal probability.
+
+### 2026-09-24 · Study data: pseudonymous ids, backend-only tables, off by default
+Participants get a random id (`P-` + 8 characters from an alphabet without look-alike characters). It is never linked to an account, email, IP address or user agent, and a test checks that none of these end up in storage. Study tables have row-level security with **no** policies, so only the backend's secret key can touch them. Events and test answers go through the API, which validates event types and payload size and grades tests on the server (the browser never receives the answer key, and scores aren't shown to participants). Enrolment is disabled unless `STUDY_ENABLED=true`, and the web page unless `NEXT_PUBLIC_STUDY_MODE=true`, so no data can be collected before the draft consent form (v1-draft) and the draft assessment are reviewed. **Pending the owner's decision:** a withdrawal button (deletes everything for the id) and a "18 or older" consent line were added; both are common ethics requirements but weren't in the brief.
+
+### 2026-09-24 · Drop-off is captured with sendBeacon
+Events are batched every 5 s (or every 20 events). When a page is hidden or closed, the batch is sent with `navigator.sendBeacon`, which survives page unload; that's how the last step a participant reached (the drop-off point) is recorded. The events endpoint accepts `text/plain` bodies for this reason.
+
+### 2026-09-24 · Study conditions are kept identical
+While a participant is recording, LLM hook personalization is switched off, so everyone sees the same reviewed hooks. Personalization would vary by person and by API availability, and would confound pre/post comparisons. The tutor stays available, and each question asked is logged (as `tutor_question`, with whether it was supported).
+
+### 2026-09-24 · Pre/post-test items test transfer, not recall
+The 9 assessment items (`content/study/assessment.yaml`, draft) are shared by the pre-test and the post-test. They probe the same ideas as the lessons with different numbers and situations, and the validator rejects any item whose text matches a lesson or quick-check question. Two near-duplicates were reworded after a manual review.
+
+### 2026-09-24 · Accounts: device-first, with an optional Supabase magic-link account
+Progress is always saved on the device, and nobody has to sign up. If Supabase is configured, "Save progress" sends a magic link (`signInWithOtp`); once signed in, journeys are merged (the most recently updated wins per question) into a `progress` row protected by RLS. **Deviation to review:** the brief says "anonymous-first" via Supabase; Supabase anonymous sign-ins weren't used, because they're rate-limited (30/hour per IP by default, a problem for a classroom behind one IP) and Supabase recommends a CAPTCHA for them. Anonymity is provided by the device-first design instead.
+
+### 2026-09-24 · Supabase key formats
+Supabase deprecates the legacy `anon` / `service_role` JWT keys at the end of 2026. The env variable names from the brief are kept, but they should hold the new `sb_publishable_…` / `sb_secret_…` keys. The backend sends secret keys only in the `apikey` header (they aren't JWTs), and still supports a legacy JWT key via `Authorization: Bearer`.
+
+### 2026-09-24 · Rate limits sized for classrooms
+A class usually shares one public IP. Tutor questions are limited to 30 per minute per IP, and hooks (almost always hand-written or cached) to 240 per minute, so lessons never get blocked by other learners' questions. The end-to-end suite found this: at the original 20 per minute, hook calls from a single IP starved tutor questions.

@@ -8,6 +8,8 @@ Checks every concept and question file:
     dead end
   * every circuit puzzle can actually be solved with its allowed gates (checked by search)
   * question-specific hooks refer to real questions
+  * the study's pre/post-test (content/study/assessment.yaml) is valid and never repeats a
+    lesson or quick-check question
 
 Math rendering is checked separately with KaTeX (`npm run content:math` in web/), because
 KaTeX is a JavaScript library. `scripts/validate-content.sh` runs both.
@@ -20,6 +22,10 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import yaml
+from pydantic import ValidationError
+
+from app.content.assessment import load_assessment, validate_assessment
 from app.content.loader import DEFAULT_CONTENT_DIR, Content, load_content
 from app.content.paths import CycleError, UnknownConceptError, build_graph, learning_path
 from app.content.puzzles import shortest_solution
@@ -66,9 +72,20 @@ def validate(content: Content) -> list[str]:
     return errors
 
 
+def validate_study(content: Content, content_dir: Path) -> list[str]:
+    path = content_dir / "study" / "assessment.yaml"
+    if not path.exists():
+        return []
+    try:
+        assessment = load_assessment(path)
+    except (ValidationError, yaml.YAMLError) as e:
+        return [f"study/assessment.yaml: {e}"]
+    return validate_assessment(assessment, content)
+
+
 def main(content_dir: Path = DEFAULT_CONTENT_DIR) -> int:
     content = load_content(content_dir)
-    errors = validate(content)
+    errors = validate(content) + validate_study(content, content_dir)
     authored = sum(c.is_authored for c in content.concepts.values())
     enabled = sum(q.enabled for q in content.questions.values())
     if errors:

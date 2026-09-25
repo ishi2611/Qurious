@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { apiRequest } from "@/lib/api";
+import { isRecording, loadStudy } from "@/lib/study";
 
 /**
  * The lesson hook, rephrased by the tutor to connect to the learner's question when the LLM
@@ -18,7 +19,9 @@ export function usePersonalizedHook(
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reset when the concept changes
     setHook(fallback);
-    if (!questionId) return;
+    // In the study, every participant sees the same reviewed hooks: LLM rephrasing would vary
+    // between people (and with API availability) and confound the results.
+    if (!questionId || isRecording(loadStudy())) return;
     const controller = new AbortController();
     apiRequest<{ hook: string; personalized: boolean }>("/tutor/hook", {
       method: "POST",

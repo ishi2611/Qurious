@@ -20,6 +20,7 @@
     "@dnd-kit/core": "^6.3.1",
     "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.8.1",
+    "@supabase/supabase-js": "^2.109.0",
     "@xyflow/react": "^12.12.0",
     "katex": "^0.18.9",
     "motion": "^13.4.3",

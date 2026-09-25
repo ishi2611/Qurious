@@ -20,7 +20,8 @@ class Settings(BaseSettings):
     llm_fallback_model: str = ""
     ibm_quantum_token: str = ""
     supabase_url: str = ""
-    supabase_anon_key: str = ""
+    supabase_anon_key: str = ""  # used by the browser; listed here only for completeness
+    # The backend's key: a new-style secret key (sb_secret_…) or a legacy service_role JWT.
     supabase_service_role_key: str = ""
 
     # Browser origins allowed to call the API (the Next.js dev server by default).
@@ -31,6 +32,13 @@ class Settings(BaseSettings):
 
     # Load the tutor's embedding model at startup instead of on the first question.
     warm_up_tutor: bool = True
+
+    # Study enrolment is off until the consent form and instruments are approved.
+    study_enabled: bool = False
+
+    # Researchers send this as "Authorization: Bearer <token>" to download study CSVs.
+    # Export is disabled while it's empty.
+    study_admin_token: str = ""
 
 
 settings = Settings()
