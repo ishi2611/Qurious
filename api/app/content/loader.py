@@ -3,6 +3,7 @@ stopping at the first, so the validator can report all problems in one run."""
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -11,7 +12,10 @@ from pydantic import ValidationError
 
 from app.content.schema import Concept, Question
 
-DEFAULT_CONTENT_DIR = Path(__file__).resolve().parents[3] / "content"
+# The repo's content/ folder, unless QURIOUS_CONTENT_DIR points elsewhere (e.g. in a container).
+DEFAULT_CONTENT_DIR = Path(
+    os.environ.get("QURIOUS_CONTENT_DIR") or Path(__file__).resolve().parents[3] / "content"
+)
 
 
 @dataclass

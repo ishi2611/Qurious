@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     llm_primary_model: str = ""
     llm_fallback_model: str = ""
     ibm_quantum_token: str = ""
+    # Optional IBM Cloud instance CRN; if empty, IBM picks an instance for the token.
+    ibm_quantum_instance: str = ""
     supabase_url: str = ""
     supabase_anon_key: str = ""  # used by the browser; listed here only for completeness
     # The backend's key: a new-style secret key (sb_secret_…) or a legacy service_role JWT.

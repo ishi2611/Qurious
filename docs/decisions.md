@@ -108,3 +108,18 @@ Supabase deprecates the legacy `anon` / `service_role` JWT keys at the end of 20
 
 ### 2026-09-24 · Rate limits sized for classrooms
 A class usually shares one public IP. Tutor questions are limited to 30 per minute per IP, and hooks (almost always hand-written or cached) to 240 per minute, so lessons never get blocked by other learners' questions. The end-to-end suite found this: at the original 20 per minute, hook calls from a single IP starved tutor questions.
+
+### 2026-09-24 · Accessibility is tested, not assumed
+`web/e2e/a11y.spec.ts` runs axe-core (WCAG 2.0–2.2 A/AA rules) on every main page and every lesson section, in both themes, on desktop and phone (36 checks). It found one real issue: React Flow's attribution link could be focused inside the `aria-hidden` path map. The visual map is now `inert`, and screen readers get an ordered list of stops instead.
+
+### 2026-09-24 · Path map snakes across rows
+Twelve stops in one horizontal row made labels unreadable and cut off the current stop. The subway line now runs left→right, then right→left, in rows of four (one column on phones), with the track attached to each stop's circle so it reads as one continuous line.
+
+### 2026-09-24 · API hosting: Hugging Face Spaces first
+The tutor's local embedding model needs torch, which exceeds Render's free 512 MB instance. The root `Dockerfile` (CPU-only torch, model baked in, non-root user) runs on Hugging Face Spaces' free CPU tier (16 GB), and the same image works with `render.yaml` on a paid Render plan. The content folder is found via `QURIOUS_CONTENT_DIR` inside the container. The web app deploys to Vercel with `web/` as the root; `outputFileTracingIncludes` ships `../content` with the one dynamic route (`/explore`).
+
+### 2026-09-24 · Real IBM hardware: small, rate-limited, optional
+`/playground` can send a circuit (≤ 5 qubits, ≤ 30 gates, 256 shots) to the least-busy IBM backend via `qiskit-ibm-runtime` 0.50 (`channel="ibm_quantum_platform"`, SamplerV2), then polls the job and shows queue position, status and ideal-vs-hardware results. It's disabled unless `IBM_QUANTUM_TOKEN` is set, and limited to 3 submissions per visitor per hour, because the free plan has only minutes of hardware time per month. Qiskit's little-endian counts are reversed to Qurious's big-endian labels. It's tested with a fake runner; **not yet tried against real IBM hardware** (no token available during development).
+
+### 2026-09-24 · Next.js 16 error boundaries use `retry`
+The bundled docs show `error.tsx` receiving `retry()` (re-fetches and re-renders) instead of the older `reset()`. We use `retry`.

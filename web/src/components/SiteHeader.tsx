@@ -58,6 +58,12 @@ export default function SiteHeader() {
             Questions
           </Link>
           <Link
+            href="/playground"
+            className="text-ink-muted hover:text-ink hidden rounded-md px-2 py-1 text-sm sm:inline"
+          >
+            Playground
+          </Link>
+          <Link
             href="/translator"
             className="text-ink-muted hover:text-ink hidden rounded-md px-2 py-1 text-sm sm:inline"
           >

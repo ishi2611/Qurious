@@ -1,0 +1,31 @@
+# Render Blueprint for the API (alternative to Hugging Face Spaces).
+# Note: the tutor's embedding model (torch + MiniLM) needs more memory than Render's free
+# 512 MB instance; use at least the Starter plan, or host the API on Hugging Face Spaces.
+services:
+  - type: web
+    name: qurious-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: CORS_ORIGINS
+        sync: false # e.g. ["https://qurious.vercel.app"]
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: LLM_PRIMARY_MODEL
+        value: openai/gpt-oss-120b
+      - key: LLM_FALLBACK_MODEL
+        value: gemini-3.5-flash-lite
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: STUDY_ENABLED
+        value: "false"
+      - key: STUDY_ADMIN_TOKEN
+        sync: false
+      - key: IBM_QUANTUM_TOKEN
+        sync: false

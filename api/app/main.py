@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app import __version__
 from app.config import settings
-from app.routes import content, study, tutor
+from app.routes import content, hardware, study, tutor
 
 log = logging.getLogger("qurious")
 
@@ -43,6 +43,7 @@ app.add_middleware(
 app.include_router(content.router)
 app.include_router(tutor.router)
 app.include_router(study.router)
+app.include_router(hardware.router)
 
 
 @app.get("/health")

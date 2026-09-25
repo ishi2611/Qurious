@@ -22,6 +22,81 @@ export type MapStop = {
 
 type StopData = MapStop & { vertical: boolean };
 
+const STOPS_PER_ROW = 4;
+const COL_WIDTH = 150;
+const ROW_HEIGHT = 104;
+const PHONE_ROW_HEIGHT = 60;
+const DOT = 32; // stop circle size in px
+
+/** Handles sit on the edge of the stop's circle (not the label box), so the track runs
+ * continuously from dot to dot. */
+function Handles({ vertical }: { vertical: boolean }) {
+  const hidden = { opacity: 0 };
+  const x = vertical ? DOT / 2 : undefined; // phone: circle is on the left
+  return (
+    <>
+      <Handle
+        id="t"
+        type="target"
+        position={Position.Top}
+        style={{ ...hidden, left: x, top: 0 }}
+      />
+      <Handle
+        id="b"
+        type="source"
+        position={Position.Bottom}
+        style={{ ...hidden, left: x, top: DOT, bottom: "auto" }}
+      />
+      {!vertical && (
+        <>
+          <Handle
+            id="tl"
+            type="target"
+            position={Position.Left}
+            style={{
+              ...hidden,
+              top: DOT / 2,
+              left: `calc(50% - ${DOT / 2}px)`,
+            }}
+          />
+          <Handle
+            id="tr"
+            type="target"
+            position={Position.Right}
+            style={{
+              ...hidden,
+              top: DOT / 2,
+              right: `calc(50% - ${DOT / 2}px)`,
+              left: "auto",
+            }}
+          />
+          <Handle
+            id="sl"
+            type="source"
+            position={Position.Left}
+            style={{
+              ...hidden,
+              top: DOT / 2,
+              left: `calc(50% - ${DOT / 2}px)`,
+            }}
+          />
+          <Handle
+            id="sr"
+            type="source"
+            position={Position.Right}
+            style={{
+              ...hidden,
+              top: DOT / 2,
+              right: `calc(50% - ${DOT / 2}px)`,
+              left: "auto",
+            }}
+          />
+        </>
+      )}
+    </>
+  );
+}
+
 function StopNode({ data }: NodeProps<Node<StopData>>) {
   const { title, status, isGoal, vertical } = data;
   const ring =
@@ -32,15 +107,16 @@ function StopNode({ data }: NodeProps<Node<StopData>>) {
         : "border-ink-muted/50 bg-surface text-ink-muted";
   return (
     <div
-      className={`flex items-center gap-2 ${vertical ? "flex-row" : "w-28 flex-col text-center"}`}
+      className={
+        vertical
+          ? "flex w-64 items-center gap-3"
+          : "flex w-32 flex-col items-center gap-1.5 text-center"
+      }
     >
-      <Handle
-        type="target"
-        position={vertical ? Position.Top : Position.Left}
-        className="!opacity-0"
-      />
+      <Handles vertical={vertical} />
       <span
-        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 text-sm font-semibold ${ring}`}
+        className={`flex shrink-0 items-center justify-center rounded-full border-2 text-sm font-semibold ${ring}`}
+        style={{ width: DOT, height: DOT }}
         aria-hidden="true"
       >
         {isGoal ? "⚑" : status === "done" ? "✓" : ""}
@@ -50,11 +126,6 @@ function StopNode({ data }: NodeProps<Node<StopData>>) {
       >
         {title}
       </span>
-      <Handle
-        type="source"
-        position={vertical ? Position.Bottom : Position.Right}
-        className="!opacity-0"
-      />
     </div>
   );
 }
@@ -62,8 +133,10 @@ function StopNode({ data }: NodeProps<Node<StopData>>) {
 const nodeTypes = { stop: StopNode };
 
 /**
- * Subway-style map of the path: done stops filled, the current stop ringed, the goal as a flag.
- * A plain ordered list carries the same information for screen readers.
+ * Subway-style map of the path. On wide screens the line snakes across rows of four (left to
+ * right, then right to left); on phones it runs straight down. Done stops are filled, the
+ * current stop is ringed, and the goal is a flag. A plain ordered list carries the same
+ * information for screen readers.
  */
 export default function PathMap({
   stops,
@@ -72,30 +145,50 @@ export default function PathMap({
   stops: MapStop[];
   vertical?: boolean;
 }) {
+  const perRow = vertical ? 1 : STOPS_PER_ROW;
+  const rows = Math.ceil(stops.length / perRow);
+  const rowHeight = vertical ? PHONE_ROW_HEIGHT : ROW_HEIGHT;
+
   const { nodes, edges } = useMemo(() => {
-    const nodes: Node<StopData>[] = stops.map((s, i) => ({
-      id: s.id,
-      type: "stop",
-      position: vertical
-        ? { x: 0, y: i * 64 }
-        : { x: i * 124, y: (i % 2) * 36 },
-      data: { ...s, vertical },
-      draggable: false,
-      selectable: false,
-      focusable: false,
-    }));
-    const edges: Edge[] = stops.slice(1).map((s, i) => ({
-      id: `${stops[i].id}-${s.id}`,
-      source: stops[i].id,
-      target: s.id,
-      type: "straight",
-      style: {
-        stroke: stops[i].status === "done" ? "var(--accent)" : "var(--border)",
-        strokeWidth: 3,
-      },
-    }));
+    const place = (i: number) => {
+      const row = Math.floor(i / perRow);
+      const inRow = i % perRow;
+      const col = row % 2 === 0 ? inRow : perRow - 1 - inRow; // boustrophedon
+      return { row, col };
+    };
+    const nodes: Node<StopData>[] = stops.map((s, i) => {
+      const { row, col } = place(i);
+      return {
+        id: s.id,
+        type: "stop",
+        position: { x: col * COL_WIDTH, y: row * rowHeight },
+        data: { ...s, vertical },
+        draggable: false,
+        selectable: false,
+        focusable: false,
+      };
+    });
+    const edges: Edge[] = stops.slice(1).map((s, k) => {
+      const a = place(k);
+      const b = place(k + 1);
+      const sameRow = a.row === b.row;
+      const rightward = b.col > a.col;
+      return {
+        id: `${stops[k].id}-${s.id}`,
+        source: stops[k].id,
+        target: s.id,
+        sourceHandle: sameRow ? (rightward ? "sr" : "sl") : "b",
+        targetHandle: sameRow ? (rightward ? "tl" : "tr") : "t",
+        type: "straight",
+        style: {
+          stroke:
+            stops[k].status === "done" ? "var(--accent)" : "var(--border)",
+          strokeWidth: 4,
+        },
+      };
+    });
     return { nodes, edges };
-  }, [stops, vertical]);
+  }, [stops, vertical, perRow, rowHeight]);
 
   const done = stops.filter((s) => s.status === "done").length;
 
@@ -103,21 +196,21 @@ export default function PathMap({
     <figure>
       <div
         className="border-border bg-surface w-full overflow-hidden rounded-xl border"
-        style={{
-          height: vertical ? Math.max(160, stops.length * 64 + 32) : 180,
-        }}
-        aria-hidden="true"
+        style={{ height: rows * rowHeight + (vertical ? 40 : 56) }}
+        // `inert` (not just aria-hidden) also takes React Flow's links and controls out of the
+        // tab order; screen readers get the list in the figcaption instead.
+        inert
       >
         <ReactFlow
           nodes={nodes}
           edges={edges}
           nodeTypes={nodeTypes}
           fitView
-          fitViewOptions={{ padding: 0.15 }}
+          fitViewOptions={{ padding: 0.12, maxZoom: 1 }}
           nodesDraggable={false}
           nodesConnectable={false}
           elementsSelectable={false}
-          panOnDrag={!vertical}
+          panOnDrag={false}
           zoomOnScroll={false}
           zoomOnPinch={false}
           zoomOnDoubleClick={false}

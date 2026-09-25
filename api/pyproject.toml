@@ -14,6 +14,7 @@ dependencies = [
     "requests>=2.32",     # LLM provider HTTP calls
     "sentence-transformers>=5.0",  # local embeddings for retrieval (no paid API)
     "chromadb>=1.0",      # vector search over lesson content
+    "qiskit-ibm-runtime>=0.50",  # optional real-hardware runs (needs IBM_QUANTUM_TOKEN)
 ]
 
 [project.optional-dependencies]

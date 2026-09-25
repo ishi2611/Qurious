@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  api:
+    name: API, content and simulator cross-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install API
+        run: |
+          pip install --index-url https://download.pytorch.org/whl/cpu torch
+          pip install -e "./api[dev]"
+      - name: Lint
+        working-directory: api
+        run: ruff check . && ruff format --check .
+      - name: Unit tests
+        working-directory: api
+        run: pytest
+      - name: Tutor quality tests (real embedding model)
+        working-directory: api
+        run: pytest -m slow -o addopts=""
+      - name: Install web (for KaTeX and the simulator)
+        working-directory: web
+        run: npm ci
+      - name: Validate content
+        run: ./scripts/validate-content.sh
+      - name: Cross-check the simulator against Qiskit-Aer (50 random circuits)
+        run: ./scripts/sim-crosscheck.sh 50
+
+  web:
+    name: Web lint, types, unit tests, build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run build
+
+  e2e:
+    name: End-to-end and accessibility (Playwright)
+    runs-on: ubuntu-latest
+    needs: [api, web]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install API
+        run: |
+          pip install --index-url https://download.pytorch.org/whl/cpu torch
+          pip install -e ./api
+      - name: Install web and browsers
+        working-directory: web
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Build web (pointing at the test API, study mode on)
+        working-directory: web
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8100
+          NEXT_PUBLIC_STUDY_MODE: "true"
+      - name: Playwright
+        working-directory: web
+        run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: web/test-results
