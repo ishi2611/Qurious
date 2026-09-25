@@ -34,3 +34,7 @@ api/.cache/
 .DS_Store
 .vscode/
 .idea/
+
+# Private planning notes (kept locally, not published)
+CLAUDE.md
+PROJECT_BRIEF.md
